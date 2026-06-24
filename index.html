@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>作文侦探社 · 三大谜案</title>
+<style>
+  :root{
+    --teal1:#0e2a33; --teal2:#16323d; --cream:#fbf3e2; --cream2:#f3e6c4;
+    --ink:#2c2018; --ink2:#5a4634; --brass:#c79a3b; --brass-d:#a87f28;
+    --u1:#e0843c; --u4:#6f7fd6; --u5:#cf5a7e;
+    --ok:#3fa66a; --bad:#d9534f; --shadow:0 8px 22px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","微软雅黑",system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #1d4250 0%, transparent 60%),
+      linear-gradient(160deg, var(--teal1), var(--teal2));
+    min-height:100%;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .kai{font-family:"STKaiti","KaiTi","楷体",serif;}
+  header{
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+    padding:10px 16px;border-bottom:2px solid rgba(199,154,59,.45);
+    background:rgba(7,22,28,.55);backdrop-filter:blur(4px);
+    position:sticky;top:0;z-index:20;
+  }
+  header .ttl{font-family:"STKaiti","KaiTi",serif;color:var(--brass);font-size:20px;font-weight:700;letter-spacing:1px}
+  header .ttl small{color:#cfe0e0;font-family:inherit;font-weight:400;font-size:12px;margin-left:8px;opacity:.75}
+  .iconbtn{
+    border:1px solid rgba(199,154,59,.5);background:rgba(255,255,255,.06);color:#f3e6c4;
+    width:38px;height:34px;border-radius:9px;cursor:pointer;font-size:16px;line-height:1;
+    display:inline-flex;align-items:center;justify-content:center;transition:.15s;
+  }
+  .iconbtn:hover{background:rgba(199,154,59,.25)}
+  main#screen{max-width:920px;margin:0 auto;padding:18px 16px 70px}
+  .center{text-align:center}
+  h1{font-family:"STKaiti","KaiTi",serif;color:var(--cream);font-size:28px;margin:6px 0}
+  .sub{color:#bcd2d2;font-size:15px;line-height:1.7;max-width:600px;margin:0 auto}
+  .panel{background:linear-gradient(180deg,#fffaf0,var(--cream));border:2px solid var(--brass);
+    border-radius:18px;box-shadow:var(--shadow);padding:18px;}
+  .btn{
+    font-family:inherit;border:none;cursor:pointer;border-radius:14px;font-weight:700;
+    padding:13px 26px;font-size:17px;color:#3a2a10;
+    background:linear-gradient(180deg,#f0cf73,#c79a3b);
+    box-shadow:0 4px 0 #8a661c, 0 8px 16px rgba(0,0,0,.25);transition:.08s;letter-spacing:.5px;
+  }
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8a661c}
+  .btn.ghost{background:rgba(255,255,255,.1);color:#f3e6c4;border:1px solid rgba(199,154,59,.6);box-shadow:none;font-weight:600}
+  .btn.sm{padding:9px 16px;font-size:14px;border-radius:11px}
+  .btn.dark{background:linear-gradient(180deg,#3a6b54,#2c5a45);color:#eafff2;box-shadow:0 4px 0 #1d3e2f,0 8px 16px rgba(0,0,0,.25)}
+  .btn.dark:active{box-shadow:0 1px 0 #1d3e2f}
+  .btn:disabled{filter:grayscale(.7) brightness(.95);opacity:.55;cursor:not-allowed}
+  .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
+  .ava{display:block}
+  .sk{fill:#ffd9b8;stroke:#c98a5e;stroke-width:1.4}
+  .ey{fill:#3a2a22}
+  .mo{fill:none;stroke:#a85a3a;stroke-width:2;stroke-linecap:round}
+  .bl{fill:#ff9a86;opacity:.55}
+  .hr{fill:#3a2a22}
+  .ol{stroke:#4a3b2a;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+  .badge{display:inline-block;color:#fff;border-radius:20px;padding:2px 12px;font-size:12.5px;font-weight:700}
+
+  /* ---------- 侦探社大厅 / 案件卡 ---------- */
+  .cases{display:grid;grid-template-columns:1fr;gap:14px;margin-top:16px}
+  .casecard{display:flex;align-items:center;gap:16px;cursor:pointer;text-align:left;border-radius:16px;
+    padding:15px 16px;border:2px solid var(--brass);background:linear-gradient(180deg,#fffaf0,var(--cream));
+    box-shadow:var(--shadow);transition:.12s;position:relative;overflow:hidden}
+  .casecard:hover{transform:translateY(-2px)}
+  .casecard .no{width:54px;height:54px;flex:0 0 auto;border-radius:14px;display:grid;place-items:center;
+    color:#fff;box-shadow:inset 0 -3px 0 rgba(0,0,0,.15)}
+  .casecard h3{margin:0 0 3px;font-size:20px;font-family:"STKaiti","KaiTi",serif}
+  .casecard .topic{color:var(--ink);font-weight:700;font-size:15px;margin:0 0 2px}
+  .casecard p{margin:0;color:var(--ink2);font-size:13px}
+  .casecard .state{margin-left:auto;font-size:13px;text-align:center;color:var(--ink2)}
+  .casecard .state .big{font-size:24px;display:block}
+  .casecard .stripe{position:absolute;left:0;top:0;bottom:0;width:7px}
+
+  /* ---------- 关卡进度条（房间） ---------- */
+  .rooms{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
+  .rm{font-size:12px;color:#bcd2d2;border:1px solid rgba(199,154,59,.4);border-radius:20px;padding:3px 11px;background:rgba(255,255,255,.05)}
+  .rm.cur{background:var(--brass);color:#2a1d08;border-color:var(--brass);font-weight:700}
+  .rm.done{color:#9fe7bd;border-color:rgba(63,166,106,.6)}
+
+  /* ---------- 题眼 chips ---------- */
+  .wchips{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+  .wc{font-family:"STKaiti","KaiTi",serif;font-size:21px;font-weight:700;padding:9px 15px;border-radius:12px;
+    border:2px dashed var(--brass);background:#fff;cursor:pointer;transition:.12s;color:var(--ink)}
+  .wc:hover{transform:translateY(-2px)}
+  .wc.hit{background:#fff2c8;border-style:solid;border-color:var(--ok);color:#2f7d4f;box-shadow:0 0 0 3px rgba(63,166,106,.18)}
+  .wc.miss{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+
+  /* ---------- 选项卡（选事/情绪/特点） ---------- */
+  .picks{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+  @media(max-width:560px){.picks{grid-template-columns:1fr}}
+  .pick{font-family:inherit;font-size:15px;font-weight:600;text-align:left;padding:13px 14px;border-radius:13px;
+    border:2px solid var(--brass);background:linear-gradient(180deg,#fffaf0,var(--cream));cursor:pointer;transition:.1s;color:var(--ink);line-height:1.5}
+  .pick:hover{transform:translateY(-2px)}
+  .pick.sel{outline:4px solid var(--u4);outline-offset:1px;background:#eef0ff}
+  .pick b{color:var(--brass-d)}
+
+  /* ---------- 金句库 ---------- */
+  .scat{margin-top:14px}
+  .scat h4{font-family:"STKaiti","KaiTi",serif;font-size:16px;margin:0 0 8px;color:var(--brass-d);display:flex;align-items:center;gap:6px}
+  .sent{display:block;width:100%;text-align:left;font-size:14.5px;line-height:1.6;padding:11px 13px;border-radius:12px;
+    border:1.5px solid #e6d3a4;background:#fffdf6;cursor:pointer;transition:.1s;color:var(--ink);margin-bottom:8px;position:relative}
+  .sent:hover{border-color:var(--brass)}
+  .sent.on{background:#e7f6ec;border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+  .sent .tick{position:absolute;right:9px;top:9px;color:var(--ok);font-weight:800;opacity:0;transition:.15s}
+  .sent.on .tick{opacity:1}
+
+  /* ---------- 创作室 ---------- */
+  .field{margin-bottom:13px}
+  .field label{display:block;font-weight:700;color:var(--ink);font-size:14.5px;margin-bottom:5px}
+  .field label .tip{font-weight:400;color:var(--ink2);font-size:12.5px}
+  .field textarea{width:100%;font-family:inherit;font-size:15px;line-height:1.6;color:var(--ink);
+    border:1.5px solid #e0cb98;border-radius:11px;padding:10px 12px;background:#fffdf6;resize:vertical;min-height:48px;outline:none}
+  .field textarea:focus{border-color:var(--brass)}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 12px}
+  .jchip{font-size:12.5px;border:1px solid var(--brass);background:#fff7e3;color:var(--brass-d);border-radius:20px;padding:4px 11px;cursor:pointer;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .jchip:hover{background:#ffe9b8}
+  .jbank{display:flex;flex-direction:column;gap:7px;margin:4px 0 14px}
+  .jrow{display:flex;gap:9px;align-items:center;background:#fff7e3;border:1px solid #e6d3a4;border-radius:11px;padding:7px 10px}
+  .jrow span{font-size:13.5px;line-height:1.55;color:var(--ink)}
+  .jins{flex:0 0 auto;border:none;background:var(--brass);color:#fff;width:28px;height:28px;border-radius:9px;cursor:pointer;font-weight:800;font-size:18px;line-height:1;display:grid;place-items:center}
+  .jins:hover{background:var(--brass-d)} .jins:active{transform:scale(.92)}
+  .draftbox{width:100%;font-family:"STKaiti","KaiTi",serif;font-size:16px;line-height:1.9;color:var(--ink);
+    border:2px solid var(--brass);border-radius:13px;padding:14px 15px;background:#fffdf6;resize:vertical;min-height:220px;outline:none}
+  .draftbox:focus{border-color:var(--brass-d)}
+  .meta{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink2);margin-top:6px;flex-wrap:wrap;gap:8px}
+
+  /* ---------- 卡片/笔记 ---------- */
+  .note{background:#fff7e3;border:1px dashed var(--brass);border-radius:12px;padding:12px 14px;
+    text-align:left;font-size:14px;line-height:1.75;color:var(--ink);margin-top:10px}
+  .note b{color:var(--brass-d)}
+  .steps{counter-reset:s;margin:10px 0 0;padding:0;list-style:none}
+  .steps li{position:relative;padding:8px 8px 8px 38px;margin-bottom:8px;background:#fffdf6;border:1.5px solid #e6d3a4;border-radius:11px;font-size:14px;line-height:1.6}
+  .steps li::before{counter-increment:s;content:counter(s);position:absolute;left:9px;top:8px;width:22px;height:22px;border-radius:50%;background:var(--brass);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}
+
+  /* ---------- 弹窗 ---------- */
+  #modal{position:fixed;inset:0;background:rgba(5,15,20,.62);display:grid;place-items:center;z-index:40;padding:18px}
+  #modal.hidden{display:none}
+  .card{max-width:460px;width:100%;border-radius:20px;border:3px solid var(--brass);
+    background:linear-gradient(180deg,#fffaf0,var(--cream));box-shadow:0 16px 40px rgba(0,0,0,.45);
+    padding:20px;text-align:center;animation:pop .22s ease;max-height:88vh;overflow:auto}
+  @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+  /* ---------- 作品集 ---------- */
+  .glist{display:grid;grid-template-columns:1fr;gap:11px;margin-top:14px}
+  .gitem{border:2px solid var(--brass);border-radius:14px;background:linear-gradient(180deg,#fffaf0,var(--cream));
+    box-shadow:var(--shadow);padding:13px 15px;text-align:left;cursor:pointer;transition:.1s;display:flex;gap:12px;align-items:center}
+  .gitem:hover{transform:translateY(-2px)}
+  .gitem .gno{width:42px;height:42px;border-radius:10px;flex:0 0 auto;display:grid;place-items:center;color:#fff;font-weight:800}
+  .gitem h4{margin:0 0 2px;font-size:15px}
+  .gitem p{margin:0;font-size:12.5px;color:var(--ink2)}
+  .scoretag{margin-left:auto;font-family:"STKaiti","KaiTi",serif;font-weight:800;font-size:15px;color:var(--brass-d);text-align:center;flex:0 0 auto}
+  .scoretag small{display:block;font-size:10px;color:var(--ink2);font-weight:400}
+
+  /* ---------- 证书 ---------- */
+  #cert{background:
+      repeating-linear-gradient(45deg,rgba(199,154,59,.06) 0 12px,transparent 12px 24px),
+      linear-gradient(180deg,#fffdf5,#f7eccf);
+    border:6px double var(--brass);border-radius:14px;padding:26px 22px;max-width:560px;margin:14px auto;text-align:center;box-shadow:var(--shadow)}
+  #cert .seal{font-family:"STKaiti","KaiTi",serif;color:var(--brass-d);font-size:15px;letter-spacing:6px}
+  #cert h2{font-family:"STKaiti","KaiTi",serif;font-size:30px;margin:8px 0 4px;color:var(--ink)}
+  #cert .name{font-family:"STKaiti","KaiTi",serif;font-size:38px;color:var(--bad);margin:8px 0;font-weight:800}
+  #cert .body{font-size:15.5px;line-height:1.9;color:var(--ink2)}
+  #cert .tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0}
+  #cert .tags span{font-family:"STKaiti","KaiTi",serif;background:#fff;border:1px solid var(--brass);border-radius:20px;padding:3px 11px;font-size:13px;color:var(--ink)}
+  #cert .stamp{display:inline-grid;place-items:center;width:84px;height:84px;border-radius:50%;
+    border:3px solid var(--bad);color:var(--bad);font-family:"STKaiti","KaiTi",serif;font-weight:800;
+    transform:rotate(-12deg);font-size:14px;line-height:1.2;margin-top:8px;opacity:.9}
+
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    background:rgba(20,12,4,.92);color:#ffe9b0;padding:11px 18px;border-radius:12px;font-size:15px;
+    border:1px solid var(--brass);box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:50;max-width:88%;text-align:center}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:45}
+  .hidden{display:none}
+  .bar{height:10px;border-radius:8px;background:rgba(0,0,0,.12);overflow:hidden;margin:14px auto 2px;max-width:420px}
+  .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f0cf73,#c79a3b);transition:.5s}
+  .hint{color:#bcd2d2;font-size:13px;margin-top:8px}
+  .stat{color:#cfe0e0;font-size:14px;text-align:center;margin-top:6px}
+  footer{color:#7fa0a0;font-size:12px;text-align:center;padding:18px 12px;line-height:1.6}
+  @media print{
+    body *{visibility:hidden!important}
+    #cert,#cert *{visibility:visible!important}
+    #cert{position:absolute;left:0;top:0;border-color:#a87f28;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="ttl">作文侦探社<small>三大谜案</small></div>
+    <div class="row" style="gap:8px">
+      <button class="iconbtn" id="btnSound" title="声音开关">🔊</button>
+      <button class="iconbtn" id="btnGallery" title="作品集">📁</button>
+      <button class="iconbtn" id="btnHome" title="回到侦探社大厅">🏠</button>
+    </div>
+  </header>
+
+  <main id="screen"></main>
+  <div id="modal" class="hidden"></div>
+  <div id="toast"></div>
+  <canvas id="confetti" class="hidden"></canvas>
+  <footer>给家长：这是给五年级孩子练作文的"密室解密"游戏，覆盖第1、4、5单元三类作文。孩子闯五个房间——审题→提纲→金句→创作→结案，最后写出自己的初稿。<br>初稿可一键复制/下载，交给"侦探长"（爸爸的 Claude Code）按"只扣3分"的高标准批改、给范文。详见同文件夹《给爸爸·作文批改怎么用》。</footer>
+
+<script>
+/* ===================== 数据：三大谜案（第1/4/5单元） ===================== */
+const UNITS = [
+  /* ---------------- 第1单元 ---------------- */
+  {
+    id:'u1', no:1, color:'var(--u1)', accent:'#e0843c',
+    caseTitle:'时光胶囊之谜', topic:'那一刻，我长大了', type:'写事 · 成长', badge:'成长侦探',
+    fromText:'对应课文：《祖父的园子》抓细节、《梅花魂》借事抒情；官方例文《那一刻，我长大了》《我能照顾妈妈，我长大了》',
+    goal:'写一件成长中印象最深的事：把经过写清楚，把感到"长大"的"那一刻"写具体（所见所闻所思），写出真情实感。',
+    example:{title:'那一刻，我长大了（保护鸡蛋）', note:'开头点题"成长只在一刹那"；中间把"保护鸡蛋"这件事的经过写清楚、感受写真实；结尾照应开头、点出"长大"。',
+      text:'　　"长大"这个字眼，相信我们都不陌生。有人认为成长是一个漫长的过程，而我却认为，成长有时只在一刹那间。\n　　接近小学毕业的一天下午，语文老师布置了一项奇怪的作业：明天每人带一个鸡蛋，保护它三天。\n　　第二天，同学们都小心地护着自己的鸡蛋，有的用盒子装着，有的用软纸包着，还有的一直握在手里。大家不敢跑，不敢碰，连说话都轻声细语。不断有同学发出惊叫——又一个鸡蛋落地了！我赶紧摸了摸我的，还好，没碎。平时一下课就疯跑的我，只好老老实实地待着。\n　　到了第三天，老师统计结果，竟没有一个成功的，包括我的。老师这才告诉我们用意：父母每天不也是这样"心惊肉跳"地看着我们长大吗？我们就像这一个个鸡蛋，每天在父母小心翼翼的呵护下成长。\n　　也就是在那一刻，我知道，自己已经长大了……'},
+    riddle:'尘封的时光胶囊里，藏着你"忽然长大"的那一秒。找齐题眼，才能打开它。',
+    keyEye:['那一刻','长大'],
+    eyePool:['那一刻','长大','一件小事','长高个子','考试','放学'],
+    steps:[
+      '起因：选一件让你忽然觉得"长大了"的事（第一次独立做事、懂得父母不易、主动担起责任）。',
+      '经过：把"那一刻"放慢成慢镜头——先做什么、再做什么，动作写细。',
+      '心里：那一秒你心里在想什么、什么感受，一定要写出来。',
+      '结果+感悟：结尾自然点出"我长大了"，写真心话，不喊口号。'
+    ],
+    pickTitle:'选一件"那一刻"的成长事（也可点"自己想"）',
+    picks:[
+      {k:'第一次独立做一件事',d:'第一次自己做饭/自己回家/自己上台……'},
+      {k:'懂得了父母的不容易',d:'看见妈妈的白发、爸爸疲惫的背影，心里一酸'},
+      {k:'主动担起了责任',d:'家里有事，我主动顶上、照顾家人'},
+      {k:'一次失败后没有放弃',d:'摔倒、考砸、被批评后，我自己站了起来'},
+      {k:'自己想（写下面）',d:'你也可以写一件别的让你长大的事'}
+    ],
+    bank:{
+      '开头 · 点题入场':[
+        '成长，不是一夜之间长高了个子，而是某一个瞬间，心里忽然亮了一下。',
+        '那一天很普通，普通得像随手翻过的一页日历，可正是那一刻，我忽然长大了。',
+        '时间像一条悄悄流淌的小河，而有那么一刻，河水漫过了我的心。'
+      ],
+      '比喻 · 让画面发光':[
+        '阳光透过窗子洒在桌上，碎成一地金子。',
+        '我的心怦怦直跳，像揣了一只乱蹦的小兔子。',
+        '妈妈的白发在灯下闪着光，像悄悄落了一层细细的霜。'
+      ],
+      '动作 · 把那一刻放慢（慢镜头）':[
+        '我深吸一口气，握紧了拳头，一步、一步，慢慢朝前走去。',
+        '我蹲下身，轻轻接过妈妈手里的菜篮——那一刻，篮子比我想的要沉得多。',
+        '我的手停在半空，犹豫了一下，最后还是稳稳地伸了过去。'
+      ],
+      '心理 · 那一秒在想什么':[
+        '那一瞬间，我的脑子里像放电影，闪过妈妈每天早起的背影。',
+        '我忽然明白：原来长大，就是开始替别人着想。',
+        '一股从没有过的勇气，从我心底一点点升了起来。'
+      ],
+      '结尾 · 点出成长':[
+        '从那一刻起，我知道，自己不再是那个只会伸手要的小孩了。',
+        '那一刻，像一粒种子落进心里，悄悄地，我长大了。',
+        '原来长大，就藏在这样一个不起眼的瞬间里。'
+      ]
+    },
+    words:['恍然大悟','若有所思','郑重其事','鼻子一酸','怦怦直跳','暖意融融','眷恋'],
+    fields:[
+      {key:'kt', label:'① 开头·点题', tip:'用一句话引出"那一刻/成长"，可借上面的金句', ph:'例：那一天很普通，可正是那一刻，我忽然长大了。'},
+      {key:'qy', label:'② 起因', tip:'那一刻之前发生了什么？为什么是你来做？', ph:'例：那天妈妈病了，家里没人做饭，我第一次站到了灶台前……'},
+      {key:'jg', label:'③ 经过·那一刻（慢镜头·最重要）', tip:'把那一秒放慢：动作先…再…然后…', ph:'例：我深吸一口气，学着妈妈的样子，先……再……'},
+      {key:'xl', label:'④ 那一刻·我心里', tip:'当时心里想什么、什么感受（别漏）', ph:'例：我忽然想起妈妈每天都这样忙，心里一酸……'},
+      {key:'js', label:'⑤ 结果 + 成长感悟', tip:'结果怎样？你明白了什么？点出"长大"', ph:'例：饭端上桌，妈妈笑了。那一刻我懂得，长大就是学会照顾别人。'}
+    ],
+    compose(f){
+      return [f.kt,f.qy,f.jg,f.xl,f.js].filter(Boolean).join('\n    ');
+    }
+  },
+
+  /* ---------------- 第4单元 ---------------- */
+  {
+    id:'u4', no:4, color:'var(--u4)', accent:'#6f7fd6',
+    caseTitle:'读心密室之谜', topic:'他＿＿＿了', type:'写人 · 表现内心', badge:'读心侦探',
+    fromText:'对应课文：《青山处处埋忠骨》《军神》——从动作、语言、神态看内心；官方例文《他后悔了》《他笑了》',
+    goal:'先明确情绪、围绕情绪选材；交代前因后果；和情绪相关的内容详写；用动作、语言、神态、心理把内心"演"出来，不直接说情绪。',
+    example:{title:'他后悔了', note:'围绕"后悔"选材；用"闷闷不乐""抓着头发""像霜打的茄子"等神态、动作、心理把后悔写具体；以叹息结尾。',
+      text:'　　每个人都可能犯过许多错误。而令李明最后悔的，就是和同学李亦可的一次争吵。\n　　那是三年级的事了。体育课上，李亦可抓了把沙子往李明头上撒，还觉得好玩。李明气得火冒三丈，瞪着眼珠子，跺着脚大叫："你是不是有病？"接着用力扯了一下她的胳膊，李亦可又疼又难过，伤心地跑开了。\n　　这节课李明闷闷不乐。终于挨到下课，他看见李亦可还在哭，心想：我是不是太狠了点儿？他坐在位子上，抓着头发，心里很不是滋味："她是我的同学，还是个女孩子，我怎么能这样对她呢？"\n　　有了这块重石头压在心里，李明像霜打的茄子，蔫了一整天。想去道歉，李亦可见了他却扭身就走。哎，如果时光能倒退，他一定要和她心平气和地说话。他真后悔当时那么冲动，伤害了李亦可。'},
+    riddle:'读心密室的门锁住了一个人的情绪。先补全题目、锁定那种情绪，门才会开。',
+    keyEye:['他','内心'],
+    emotionPick:true,
+    pickTitle:'先把题目补完整——他怎么了？（锁定一种情绪）',
+    picks:[
+      {k:'陶醉了',d:'沉醉在喜欢的事里，眼里放光'},
+      {k:'生气了',d:'气得脸红、声音发抖'},
+      {k:'伤心了',d:'眼眶红了、低着头'},
+      {k:'感动了',d:'鼻子一酸、说不出话'},
+      {k:'后悔了',d:'低着头、不停搓手'},
+      {k:'紧张了',d:'手心冒汗、心怦怦跳'}
+    ],
+    steps:[
+      '补题：他＿＿了——把题目补完整，锁定一种情绪。',
+      '选事：选一件能"引出"这种情绪的事，原因要交代清楚。',
+      '演出来：用神态（脸/眼/眉/嘴）+ 动作（手/脚/身子）+ 语言 + 心理，把情绪"演"出来。',
+      '不点破：不要直接写"他很生气"，要让读者从描写里自己看出来。'
+    ],
+    bank:{
+      '神态 · 脸上看情绪':[
+        '他的眉头拧成了一个疙瘩，嘴唇抿得紧紧的。',
+        '他的眼睛一下子亮了，嘴角忍不住往上扬。',
+        '他的眼眶红了，泪水在眼里打转，却倔强地不让它掉下来。'
+      ],
+      '动作 · 身体会说话':[
+        '他猛地站起来，椅子被带得"哐"地一响。',
+        '他双手紧紧攥着，指节都发白了。',
+        '他一遍又一遍地搓着手，在原地走来走去。'
+      ],
+      '语言 · 一句话见心':[
+        '"我……我不是故意的。"他的声音越来越小。',
+        '"太好了！太好了！"他几乎是喊出来的。',
+        '他半天没说话，最后只挤出一句："没关系。"'
+      ],
+      '心理 · 心里翻江倒海':[
+        '他心里像打翻了五味瓶，说不出是什么滋味。',
+        '"完了完了，这下真的搞砸了——"他脑子里嗡的一声。',
+        '一股暖流涌上他的心头，眼前的一切都变得温柔起来。'
+      ],
+      '课文同款 · 忍痛的动作':[
+        '他一声不吭，双手紧紧抓住身下的白床单，手背青筋暴起，汗如雨下。'
+      ]
+    },
+    words:['情不自禁','若有所思','喜出望外','面红耳赤','目瞪口呆','汗如雨下','垂头丧气','神采奕奕'],
+    fields:[
+      {key:'kt', label:'① 开头·交代场合', tip:'那天、在哪里、有谁', ph:'例：那天下午，教室里静悄悄的，只有他还坐在座位上。'},
+      {key:'qy', label:'② 起因', tip:'发生了什么事，引出他的情绪', ph:'例：老师念到了他的名字，说他的画被选去参赛了。'},
+      {key:'st', label:'③ 神态描写', tip:'他的脸、眼睛、眉毛、嘴是什么样', ph:'例：他的眼睛一下子亮了，嘴角忍不住往上扬。'},
+      {key:'dz', label:'④ 动作描写', tip:'他的手、脚、身子怎么动', ph:'例：他猛地站起来，又像想起什么，慢慢坐了回去。'},
+      {key:'yy', label:'⑤ 语言描写', tip:'他说了什么（一两句就好）', ph:'例："真的……是我吗？"他的声音有点抖。'},
+      {key:'xl', label:'⑥ 心理/结尾', tip:'他心里怎么想？这件事让你明白了什么', ph:'例：我猜他心里早乐开了花。看着他的样子，我也替他高兴。'}
+    ],
+    compose(f){
+      return [f.kt,f.qy,f.st,f.dz,f.yy,f.xl].filter(Boolean).join('\n    ');
+    }
+  },
+
+  /* ---------------- 第5单元 ---------------- */
+  {
+    id:'u5', no:5, color:'var(--u5)', accent:'#cf5a7e', star:true,
+    caseTitle:'嫌疑人画像之谜', topic:'形形色色的人', type:'写人 · 抓特点 ★期末最高频', badge:'画像侦探',
+    fromText:'对应课文：《刷子李》（正面+曹小三侧面）、《人物描写一组》；官方例文《爱唠叨的电梯阿姨》《我们班的体育健将》',
+    goal:'抓住一个人最鲜明的特点（标题或开头点明），用1-2个典型事例，外貌+动作+神态+语言+心理写具体，可加比喻、侧面烘托。',
+    example:{title:'爱唠叨的电梯阿姨', note:'用三个典型事例表现"爱唠叨"；动作、语言、神态把人物写活；唠叨背后是忠于职守、乐于助人——标题点特点、欲扬先抑。',
+      text:'　　看到这个题目，你可能会奇怪：管电梯的阿姨怎么会唠叨呢？且听我细细道来。\n　　暑假里的一天，我和小伙伴在楼道里玩游戏。正玩得欢，电梯门一开，里面站着一位"门神"——管电梯的阿姨。不等我们反应，她就"放起了机关枪"："哎，你们是谁？在这儿吵吵闹闹干什么？不要在楼道里打闹，会影响别人休息，听见了没有……"我们经不住那唠叨，像老鼠见了猫，飞快地逃下了楼。\n　　那时我很讨厌她。可后来，我又见到了她的另一面。\n　　有一天下午我下楼扔垃圾，走到一半，肚子突然疼得缩成一团，头上直冒冷汗。我扶着墙一步一步往下挪。电梯阿姨一看到我难受的样子，急忙跑过来："怎么啦？肚子疼？别走楼梯了，坐电梯！"说着便搀着我往电梯里走。看着她关切的样子，我的心里涌出一阵暖流……\n　　从那以后，我再听到她的"唠叨"，忽然觉得那声音是那么悦耳、那么亲切。'},
+    riddle:'要画出嫌疑人的"画像"，先抓住他最鲜明的那一个特点。锁定题眼，画像才能成形。',
+    keyEye:['特点','具体'],
+    eyePool:['特点','具体','一个人','名字','长高','地点'],
+    pickTitle:'锁定这个人最鲜明的一个特点',
+    picks:[
+      {k:'乐于助人',d:'总是第一个伸手帮忙'},
+      {k:'技艺高超',d:'有一手别人比不了的绝活'},
+      {k:'幽默风趣',d:'一开口就把大家逗笑'},
+      {k:'爱唠叨（却很爱我）',d:'叮嘱个不停，像小广播'},
+      {k:'认真细致·一丝不苟',d:'做事特别仔细，从不马虎'},
+      {k:'倔强好强',d:'认准的事，九头牛也拉不回'}
+    ],
+    steps:[
+      '锁特点：只抓一个最鲜明的特点，全文都为它服务。',
+      '选事例：用1-2件具体的事来证明这个特点（别只喊"他很厉害"）。',
+      '五描写：外貌、语言、动作、神态、心理，挑合适的写细。',
+      '侧面烘托：写写旁人的反应（看呆了、叫好、点头），从侧面衬托他。'
+    ],
+    bank:{
+      '外貌 · 为特点服务':[
+        '他有一双总是笑眯眯的眼睛，一笑起来就眯成两条缝。',
+        '她那双手粗糙得像老树皮，却灵巧得能穿针引线。',
+        '他个子不高，可往那儿一站，腰板挺得笔直，透着一股精神。'
+      ],
+      '动作 · 细致·见本领':[
+        '只见他手臂悠然摆来，悠然摆去，如同伴着鼓点，每一下都那么利落。',
+        '他三下五除二，几下子就把乱成一团的线理得清清楚楚。',
+        '他俯下身，屏住呼吸，手稳得像焊在了那里。'
+      ],
+      '语言 · 一开口就是他':[
+        '"慢点跑！""作业写完没？""多穿件衣裳！"——奶奶的唠叨像一台不会停的小广播。',
+        '"这点小事，包在我身上！"他拍着胸脯，笑得格外爽快。'
+      ],
+      '侧面烘托 · 借旁人反应':[
+        '周围的人都看呆了，半天才回过神来，齐声叫好。',
+        '同学们都竖起了大拇指，连最挑剔的班长也悄悄点了点头。',
+        '人群里发出一片"哇"的惊叹，他却像没事人一样笑了笑。'
+      ],
+      '比喻 · 让特点更鲜活':[
+        '他写起字来，笔尖在纸上沙沙地走，像春蚕在啃桑叶。',
+        '他跑起来，像一阵风，一眨眼就到了终点线。'
+      ]
+    },
+    words:['精神抖擞','手疾眼快','全神贯注','津津有味','天衣无缝','气宇轩昂','一丝不苟','胸有成竹'],
+    fields:[
+      {key:'kt', label:'① 开头·点出特点', tip:'他是谁，最大的特点是什么', ph:'例：我们班的小宇，要说他最大的本事，那就是——画画。'},
+      {key:'wm', label:'② 外貌（为特点服务）', tip:'抓一两个和特点有关的样子', ph:'例：他有一双总是笑眯眯的眼睛，手指上常沾着五颜六色的颜料。'},
+      {key:'sl', label:'③ 事例·起因经过', tip:'用一件具体的事来证明这个特点', ph:'例：上周班级要出黑板报，大家都犯了难，他却二话不说接了下来……'},
+      {key:'mx', label:'④ 具体描写（动作/语言/神态）', tip:'把当时的他写细、写活', ph:'例：只见他手腕一抖，粉笔在黑板上沙沙地走，几下子就勾出一只活灵活现的小鸟。'},
+      {key:'cm', label:'⑤ 他人反应（侧面烘托）', tip:'旁边的人什么反应', ph:'例：同学们都围了过来，看呆了，齐声叫好。'},
+      {key:'js', label:'⑥ 结尾·总结特点', tip:'再点一次特点，收住', ph:'例：这就是小宇，一个一拿起画笔就闪闪发光的人。'}
+    ],
+    compose(f){
+      return [f.kt,f.wm,f.sl,f.mx,f.cm,f.js].filter(Boolean).join('\n    ');
+    }
+  }
+];
+const U_BY_ID = Object.fromEntries(UNITS.map(u=>[u.id,u]));
+/* 题目标题：第4单元要把"他＿＿了"补全（选项已含"了"，去重避免"他陶醉了了"） */
+function caseTitle(u,c){
+  if(!u || !u.emotionPick) return u.topic;
+  const emo=((c&&c.choice)||'').replace(/了$/,'');
+  return '他'+(emo||'＿＿')+'了';
+}
+
+/* 提分秘籍（破案六守则）—— 出自《单元作文考点梳理·通用提分点》 */
+const SECRETS = [
+  {icon:'🎯', t:'守则一 · 审题不跑偏', d:'圈出题眼（"特点""那一刻""内心""具体"），全文紧扣题眼，坚决不跑题。'},
+  {icon:'💎', t:'守则二 · 选材要真要小', d:'写真实、具体、有新意的小事。宁可一件小事写透，也不要三四件流水账。'},
+  {icon:'🔍', t:'守则三 · 详略分明', d:'重点部分（高潮、"那一刻"）用慢镜头+心理详写；其余略写、一笔带过。'},
+  {icon:'🎬', t:'守则四 · 五种描写让人活', d:'多用动作、语言、神态、心理、外貌描写；善用比喻、对比，把人和事"演"出来。'},
+  {icon:'❤️', t:'守则五 · 真情实感', d:'结尾自然点出感受或道理，写心里话，不喊空口号。'},
+  {icon:'✒️', t:'守则六 · 字数与卷面', d:'写满400-450字，分段清楚，书写工整，尽量不涂改。'}
+];
+
+/* ===================== 满分例文 + 技巧拆解（部编版官方范文，例文研习室用）===================== */
+const EXAMPLES = {
+  u1: [
+    { title:'那一刻，我长大了', sub:'保护鸡蛋', hook:'保护鸡蛋三天，悟到父母也这样小心呵护着我们',
+      text:'　　“长大”这个字眼，相信我们都不陌生。有人认为成长是一个漫长的过程，而我却认为，成长有时只在一刹那间。\n　　接近小学毕业的一天下午，语文老师布置了一项奇怪的作业：明天每人带一个鸡蛋，保护它三天。\n　　第二天，同学们都小心地护着自己的鸡蛋，有的用盒子装着，有的用软纸包着，还有的一直握在手里。大家不敢跑，不敢碰，不敢跳，连说话都轻声细语。不断有同学发出惊叫——又一个鸡蛋落地了！我赶紧摸了摸我的，还好，没碎。平时一下课就疯跑的我，只好老老实实地待着。\n　　到了第三天，老师统计结果，竟没有一个成功的，包括我的。老师这才告诉我们用意：父母每天不也是这样“心惊肉跳”地看着我们长大吗？我们就像这一个个鸡蛋，每天在父母小心翼翼的呵护下成长。\n　　也就是在那一刻，我知道，自己已经长大了……',
+      frame:'对比开头（有人觉得成长漫长，我觉得只在一瞬）→ 起因（老师让保护鸡蛋三天）→ 经过（同学小心呵护、我也变文静）→ 结尾（借老师的话点明：父母也这样护着我们）→ 照应开头',
+      wuqi:[['对比开头·点题','“有人认为成长是漫长的过程，而我却认为……只在一刹那间”'],['排比','“不敢跑，不敢碰，不敢跳”'],['借他人的话点明中心','老师道出“父母心惊肉跳地看我们长大”'],['首尾呼应','开头“一刹那” ↔ 结尾“也就是在那一刻”'],['真情实感','结尾自然悟出“长大”，不喊口号']] },
+    { title:'我能照顾妈妈，我长大了', sub:'', hook:'妈妈半夜发烧，我量体温、叫爸爸、守在床边',
+      text:'　　从我能照顾妈妈那一刻起，我感觉我长大了。\n　　一个黑黑的夜晚，我正在梦中遨游，突然听到一阵阵痛苦的呻吟声。我睁眼一看，是妈妈靠在床头，手扶着脑袋。“妈妈，你怎么了？”我问。“头疼。”妈妈有气无力地回答。我一摸妈妈的头，真够烫的！赶紧拿来体温表给她量，又把毛巾冲湿了敷在她头上。一看，39度！\n　　我赶紧去药柜找退烧药，目光扫了一遍又一遍，翻腾了半天——没有！看着妈妈紧皱的眉头，我急得团团转，怎么办呀？对了，把加班的爸爸叫回来！我冲到电话前拿起就拨：“喂，爸爸！妈妈生病了，您快回来！”“知道了，我马上回家！”挂了电话，我扶妈妈躺下，搬个椅子坐在床边，时不时摸摸她头上的毛巾，热了就赶紧换一条。\n　　过了一会儿，爸爸终于进门了。我和爸爸把妈妈扶起来，背进汽车，直奔医院。\n　　几天后，妈妈的病好了。爸爸说：“多亏了你照顾得好，又及时通知我！”妈妈也说：“我的孩子长大了，会照顾妈妈了！”听着爸妈的话，我心里美滋滋的——那一刻，我也感觉自己长大了。',
+      frame:'总（能照顾妈妈，我就长大了）→ 分（发现发烧 → 量体温找药 → 打电话叫爸爸 → 守床边 → 送医院）→ 总（爸妈夸我，我心里美滋滋，觉得长大了）',
+      wuqi:[['总—分—总结构','开头总起、中间分述、结尾总收'],['语言描写','“妈妈，你怎么了？”“头疼。” 对话真实'],['动作描写','“摸头、拿体温表、敷毛巾、拨电话” 一连串动作'],['心理描写','“我急得团团转，这可怎么办呀？”'],['真情实感','结尾“美滋滋”道出长大的自豪']] },
+  ],
+  u4: [
+    { title:'他后悔了', sub:'', hook:'撒沙争吵后，他抓着头发、像霜打的茄子，悔了一整天',
+      text:'　　每个人都可能犯过许多错误。而令李明最后悔的，就是和同学李亦可的一次争吵。\n　　那是三年级的事了。体育课上，李亦可抓了把沙子往李明头上撒，还觉得好玩。李明气得火冒三丈，瞪着眼珠子，跺着脚大叫：“你是不是有病？”接着用力扯了一下她的胳膊，李亦可又疼又难过，伤心地跑开了。\n　　这节课李明闷闷不乐。终于挨到下课，他看见李亦可还在哭，心想：我是不是太狠了点儿？他坐在位子上，抓着头发，心里很不是滋味：“她是我的同学，还是个女孩子，我怎么能这样对她呢？”\n　　有了这块重石头压在心里，李明像霜打的茄子，蔫了一整天。想去道歉，李亦可见了他却扭身就走。哎，如果时光能倒退，他一定要和她心平气和地说话。他真后悔当时那么冲动，伤害了李亦可。',
+      frame:'开门见山点“后悔” → 起因（撒沙、争吵）→ 经过（闷闷不乐、内心独白）→ 结尾（叹息，追悔莫及）',
+      wuqi:[['开门见山·点情绪','第一段就点出“最后悔”'],['神态·动作','“瞪着眼珠子、跺着脚、抓着头发”'],['心理·内心独白','“她是我的同学……我怎么能这样对她呢？”'],['比喻','“像霜打的茄子，蔫了一整天”'],['不说情绪·演出来','全程没直说“后悔”，全靠动作神态'],['以叹息结尾','“哎，如果时光能倒退……”']] },
+    { title:'他笑了', sub:'种钱', hook:'铁头把钱“种”进花盆等发芽，结果挠头不好意思地笑了',
+      text:'　　童年里有趣事，也有乐事，但总也缺不了一些小小的傻事。\n　　记得五六岁时一个阳光明媚的上午，妈妈给了铁头几毛钱，让他自己去小卖部买糖。可铁头并没有去买糖，而是想：妈妈把豆子种在土里，能长出许多豆子，那钱种在地里，应该也能长出数不清的钱吧！那样他就能买好多好吃的了。\n　　于是，铁头学着妈妈种豆子的样子，先挖了一个小坑，把钱塞进去，接着填上土，浇了点水，最后还把妈妈的肥料偷偷倒了点上去。\n　　每天早、中、晚，铁头都蹲在花盆边，目不转睛地盯着。可过了五六天，一点动静也没有。好奇的铁头把泥土挖开，结果钱已经烂了！这时妈妈走出来，问：“你怎么啦，整天守着花盆失魂落魄的？”“妈妈，你种豆子的方法根本不对，你看，我种的钱都烂了！”铁头气冲冲地说。妈妈先是一愣，随后哈哈大笑：“我的傻宝贝，钱是不能种的！”\n　　听妈妈讲完，铁头终于明白了，挠着头，不好意思地笑了，露出一口小白牙。那纯真又可爱的笑容，深深地烙进了他的童年。',
+      frame:'起因（妈妈给钱买糖，他却想“种”钱）→ 经过（挖坑→塞钱→填土→浇水，每天守着）→ 结果（钱烂了、妈妈大笑）→ 结尾（挠头不好意思地笑）',
+      wuqi:[['按顺序·拆步骤','“先……接着……最后……”把种钱写清楚'],['神态描写','“目不转睛地盯着”“失魂落魄”“挠着头不好意思地笑”'],['语言描写','妈妈“我的傻宝贝，钱是不能种的！”'],['心理描写','铁头天真的想法（钱也能像豆子一样长）'],['详写过程·突出天真','种钱过程写得细，表现他的天真烂漫']] },
+  ],
+  u5: [
+    { title:'爱唠叨的电梯阿姨', sub:'', hook:'三个事例写“爱唠叨”，唠叨背后是忠于职守、乐于助人',
+      text:'　　看到这个题目，你可能会奇怪：管电梯的阿姨怎么会唠叨呢？且听我细细道来。\n　　暑假里的一天，我和小伙伴在楼道里玩游戏。正玩得欢，电梯门一开，里面站着一位“门神”——管电梯的阿姨。不等我们反应，她就“放起了机关枪”：“哎，你们是谁？在这儿吵吵闹闹干什么？不要在楼道里打闹，会影响别人休息，听见了没有……”我们经不住那唠叨，像老鼠见了猫，飞快地逃下了楼。\n　　那时我很讨厌她。可后来，我又见到了她的另一面。\n　　有一天下午我下楼扔垃圾，走到一半，肚子突然疼得缩成一团，头上直冒冷汗。我扶着墙一步一步往下挪。电梯阿姨一看到我难受的样子，急忙跑过来：“怎么啦？肚子疼？别走楼梯了，坐电梯！”说着便搀着我往电梯里走。看着她关切的样子，我的心里涌出一阵暖流……\n　　从那以后，我再听到她的“唠叨”，忽然觉得那声音是那么悦耳、那么亲切。',
+      frame:'设问开头（怎么会唠叨？）→ 事例一（唠叨我们别在楼道打闹）→ 转折（见到她的另一面）→ 事例二（我肚子疼，她让我坐电梯、搀我）→ 结尾（再听唠叨，觉得亲切）',
+      wuqi:[['设问开头·引人','“怎么会唠叨呢？且听我细细道来”'],['三个典型事例','围绕“爱唠叨”选最典型的事'],['语言描写','“放机关枪”般的唠叨，活灵活现'],['比喻','“像老鼠见了猫”“门神”'],['欲扬先抑·侧面','先讨厌、后感动，唠叨里藏着关心'],['首尾呼应','开头“怎么会唠叨” ↔ 结尾“觉得亲切”']] },
+    { title:'爱臭美的妈妈', sub:'', hook:'买化妆品、忍痛祛斑、敷面膜——三事例把“臭美”写得活灵活现',
+      text:'　　俗话说：“爱美之心，人皆有之。”可我妈妈不仅爱美，而且已经到了臭美的程度。\n　　妈妈为了美，花大把钞票买化妆品，花大量时间涂抹。护肤霜、防晒霜、保湿水、植物精油……要什么有什么。每天一起床，她做的第一件事就是擦化妆品：左擦擦，右抹抹，东涂涂，西揉揉，像粉刷墙壁似的，把那些霜啊膏啊一层层往脸上敷。\n　　一天清晨，妈妈忽然对着镜子尖叫：“我长胡子了！”我一看，“扑哧”笑出声——两个小雀斑爬上了她的嘴唇上方，活像一对“老鼠须”。当天她就买来昂贵的祛斑霜，可一擦脸就火辣辣地疼，第二天脸都肿了。我和爸爸劝她别祛了，她却咬牙切齿：“又辣又肿，说明发挥功效了，关键时刻得坚持！”望着满脸红肿强忍疼痛的妈妈，我们哭笑不得。\n　　有天晚上我去喝水，一个满脸惨白、眼眶发绿、嘴唇碧绿的“妖怪”正躺在沙发上！我一声惨叫，正敷面膜的妈妈跳起来问：“鬼在哪？”我捂着乱跳的心说：“远在天边，近在眼前，就是你呀！”\n　　唉，瞧我这个爱臭美的妈妈！',
+      frame:'引用开头（爱美之心人皆有之）→ 事例一（花钱花时间涂化妆品）→ 事例二（忍痛祛斑）→ 事例三（吓人的面膜）→ 结尾（总收，点“臭美”）',
+      wuqi:[['引用开头·扣题','俗语“爱美之心，人皆有之”'],['三个典型事例','买化妆品 / 祛斑 / 面膜'],['动作描写','“左擦擦，右抹抹，东涂涂，西揉揉”'],['夸张·比喻','“像粉刷墙壁”“老鼠须”“妖怪”'],['语言描写·幽默','“远在天边，近在眼前，就是你呀！”'],['详略得当','三件事各有侧重，都为“臭美”服务']] },
+  ],
+};
+/* 写作武器小抄（每单元关键技巧，创作室/金句库提醒用）*/
+const WEAPON_TIPS = {
+  u1:'慢镜头放慢“那一刻” · 心理描写(那秒心里在想啥) · 真情实感结尾点“长大” · 首尾呼应',
+  u4:'情绪靠“演”不靠“说”(动作/神态/语言/心理) · 围绕情绪选材 · 情绪那段详写 · 比喻',
+  u5:'只抓一个特点 · 典型事例(不写流水账) · 五种描写 · 比喻/夸张 · 侧面烘托(借旁人反应)',
+};
+
+/* ===================== SVG 小图 ===================== */
+const SVG = {
+  detective:`<svg viewBox="0 0 122 124" width="118" height="120" class="ava"><path d="M30 120 Q32 78 56 70 Q80 78 82 120 Z" fill="#b9762e" class="ol"/><rect x="50" y="56" width="12" height="11" class="sk"/><ellipse cx="56" cy="41" rx="22" ry="23" class="sk"/><path d="M34 41 Q33 17 56 15 Q79 17 78 41 Q70 27 56 27 Q42 27 34 41 Z" class="hr ol"/><path d="M33 24 Q56 6 79 24 Q56 16 33 24Z" fill="#7a4a1e" class="ol"/><ellipse cx="56" cy="24" rx="27" ry="5.5" fill="#8a5a2a" class="ol"/><circle cx="48" cy="41" r="2.8" class="ey"/><circle cx="64" cy="41" r="2.8" class="ey"/><circle cx="43" cy="47" r="3" class="bl"/><circle cx="69" cy="47" r="3" class="bl"/><path d="M50 50 Q56 55 62 50" class="mo"/><circle cx="93" cy="86" r="12" fill="rgba(160,210,255,.5)" stroke="#444" stroke-width="3"/><line x1="101" y1="95" x2="112" y2="106" stroke="#7a4a1e" stroke-width="5" stroke-linecap="round"/></svg>`,
+  pen:`<svg viewBox="0 0 64 64" width="40" height="40"><path d="M14 50 L18 40 L44 14 L52 22 L26 48 Z" fill="#f0cf73" stroke="#8a661c" stroke-width="2" stroke-linejoin="round"/><path d="M44 14 L52 22" stroke="#8a661c" stroke-width="2"/><path d="M14 50 L20 46" stroke="#8a661c" stroke-width="2"/><path d="M12 52 L18 49 L15 55 Z" fill="#3a2a22"/></svg>`,
+  lock:`<svg viewBox="0 0 64 64" width="34" height="34"><rect x="16" y="29" width="32" height="26" rx="5" fill="#e0bd63" stroke="#8a661c" stroke-width="2.4"/><path d="M22 29 v-7 a10 10 0 0 1 20 0 v7" fill="none" stroke="#8a661c" stroke-width="3.2"/><circle cx="32" cy="40" r="3.6" fill="#3a2a22"/><rect x="30.4" y="42" width="3.2" height="8" rx="1.5" fill="#3a2a22"/></svg>`
+};
+
+/* ===================== 进度存储 ===================== */
+const KEY='zw_detective_v1';
+let state = load();
+function defState(){
+  return { name:'美美', sound:true,
+    cases:{}, gallery:[] };
+}
+function load(){
+  try{ const s = Object.assign(defState(), JSON.parse(localStorage.getItem(KEY)||'{}'));
+    s.cases = s.cases||{}; s.gallery = s.gallery||[]; return s;
+  }catch(e){ return defState(); }
+}
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function cstate(id){
+  if(!state.cases[id]) state.cases[id] = {eye:false, choice:'', sentences:[], fields:{}, draft:'', maxRoom:0, submitted:false};
+  const c = state.cases[id];
+  c.fields = c.fields||{}; c.sentences = c.sentences||[];
+  return c;
+}
+
+/* ===================== 声音 ===================== */
+let actx=null;
+function tone(freq,dur,type='sine',vol=.2,delay=0){
+  if(!state.sound) return;
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const t0 = actx.currentTime + delay;
+    const o=actx.createOscillator(), g=actx.createGain();
+    o.type=type; o.frequency.value=freq; o.connect(g); g.connect(actx.destination);
+    g.gain.setValueAtTime(vol,t0); g.gain.exponentialRampToValueAtTime(.0008,t0+dur);
+    o.start(t0); o.stop(t0+dur);
+  }catch(e){}
+}
+const sfx={
+  click(){tone(430,.05,'square',.1)},
+  good(){tone(660,.12,'sine',.2);tone(880,.16,'sine',.2,.09)},
+  bad(){tone(190,.22,'sawtooth',.14)},
+  unlock(){tone(520,.09,'sine',.2);tone(700,.1,'sine',.2,.09);tone(940,.2,'sine',.22,.19)},
+  win(){[523,659,784,1047,1319].forEach((f,i)=>tone(f,.28,'triangle',.2,i*.13))}
+};
+function speak(text){
+  try{
+    if(!state.sound || !('speechSynthesis' in window)) return false;
+    const u=new SpeechSynthesisUtterance(text); u.lang='zh-CN'; u.rate=.9; u.pitch=1.04;
+    const vs=speechSynthesis.getVoices(); const zh=vs.find(v=>/zh|chinese|中文|普通话/i.test(v.lang+' '+v.name));
+    if(zh) u.voice=zh;
+    speechSynthesis.cancel(); speechSynthesis.speak(u); return true;
+  }catch(e){ return false; }
+}
+if('speechSynthesis' in window){ speechSynthesis.onvoiceschanged=()=>{}; speechSynthesis.getVoices(); }
+
+/* ===================== 工具 ===================== */
+const $=s=>document.querySelector(s);
+const screen=$('#screen');
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function toast(msg,ms=2400){const t=$('#toast');t.innerHTML=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),ms);}
+function today(){const d=new Date();const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;}
+function nowStamp(){const d=new Date();const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}`;}
+function cnLen(s){ return (s||'').replace(/\s/g,'').length; }
+function modalClose(){ $('#modal').className='hidden'; $('#modal').innerHTML=''; }
+
+/* ===================== 路由 ===================== */
+let cur='home';
+const SCREENS={ home:renderHome, lobby:renderLobby, room:renderRoom, gallery:renderGallery, secrets:renderSecrets, cert:renderCert };
+function go(name){ cur=name; window.scrollTo(0,0); SCREENS[name](); }
+let CUR_UNIT=null, CUR_ROOM=0;
+function openCase(id){ CUR_UNIT=id; const c=cstate(id); CUR_ROOM=Math.min(c.maxRoom,0); CUR_ROOM=0; go('room'); }
+
+$('#btnHome').onclick=()=>{sfx.click();go('lobby');};
+$('#btnGallery').onclick=()=>{sfx.click();go('gallery');};
+$('#btnSound').onclick=()=>{state.sound=!state.sound;save();$('#btnSound').textContent=state.sound?'🔊':'🔇';if(state.sound)sfx.good();};
+
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){ sfx.click(); go(g.dataset.go); }
+});
+
+/* ===================== 首页 ===================== */
+function renderHome(){
+  screen.innerHTML=`
+   <div class="center">
+     <div class="row" style="margin-top:6px">${SVG.detective}</div>
+     <h1>作文侦探社 · 三大谜案</h1>
+     <p class="sub">欢迎加入<b style="color:#ffd27a">作文侦探社</b>！这里有三桩棘手的"作文谜案"，
+     分别藏在第 <b>1</b>、<b>4</b>、<b>5</b> 单元的密室里。<br><br>
+     小侦探 <b style="color:#ffd27a">${esc(state.name)}</b>，你要闯过每个案子的五个房间——
+     <b>审题室 → 提纲室 → 金句库 → 创作室 → 结案厅</b>，
+     用线索和金句作"武器"，亲手破案、写出自己的作文！</p>
+     <div class="row" style="margin-top:20px">
+       <button class="btn" data-go="lobby">🔍 进入侦探社</button>
+     </div>
+     <div class="row" style="margin-top:10px">
+       <button class="btn ghost sm" data-go="secrets">📜 破案守则（提分秘籍）</button>
+       <button class="btn ghost sm" id="rename">✎ 改侦探名</button>
+     </div>
+     <p class="hint">打开右上角 🔊，"侦探长"会把题目和提示读给你听。</p>
+   </div>`;
+  $('#rename').onclick=()=>{ const n=prompt('小侦探的名字：',state.name); if(n&&n.trim()){state.name=n.trim();save();renderHome();} };
+}
+
+/* ===================== 侦探社大厅（三案） ===================== */
+function renderLobby(){
+  const doneN = UNITS.filter(u=>cstate(u.id).submitted).length;
+  screen.innerHTML=`
+   <div class="center">
+     <h1 style="font-size:24px">🕵️ 侦探社 · 案件板</h1>
+     <p class="stat">已结案 ${doneN} / 3 ${doneN===3?'· 🏅三案全破！':''}</p>
+   </div>
+   <div class="cases">
+     ${UNITS.map(u=>{
+       const c=cstate(u.id);
+       const prog = ['审题','提纲','金句','创作','结案'].slice(0, Math.max(c.maxRoom,c.submitted?5:0)).length;
+       const stateTxt = c.submitted ? '<span class="big">🏅</span>已结案' :
+                        c.maxRoom>0 ? `<span class="big">🔓</span>进行中` : `<span class="big">📂</span>未开始`;
+       return `<button class="casecard" data-case="${u.id}">
+          <div class="stripe" style="background:${u.color}"></div>
+          <div class="no" style="background:${u.color}">${u.no}</div>
+          <div>
+            <h3>案件${['一','二','三'][[1,4,5].indexOf(u.no)]} · ${u.caseTitle}</h3>
+            <div class="topic">题目：《${u.topic}》</div>
+            <p>${u.type}</p>
+          </div>
+          <div class="state">${stateTxt}</div>
+        </button>`;
+     }).join('')}
+   </div>
+   <div class="row" style="margin-top:16px">
+     <button class="btn ghost sm" data-go="secrets">📜 破案守则</button>
+     <button class="btn ghost sm" data-go="gallery">📁 我的作品集（${state.gallery.length}）</button>
+     ${doneN===3?'<button class="btn sm" data-go="cert">🏅 领取证书</button>':''}
+   </div>`;
+  screen.querySelectorAll('[data-case]').forEach(b=>b.onclick=()=>{sfx.click();openCase(b.dataset.case);});
+}
+
+/* ===================== 案件房间（子路由） ===================== */
+const ROOM_NAMES=['例文研习室','审题室','提纲室','金句库','创作室','结案厅'];
+function renderRoom(){
+  const u=U_BY_ID[CUR_UNIT], c=cstate(u.id);
+  const bar=`<div class="rooms">${ROOM_NAMES.map((r,i)=>`<span class="rm ${i===CUR_ROOM?'cur':(i<CUR_ROOM?'done':'')}">${i+1}.${r}</span>`).join('')}</div>`;
+  const head=`<div class="center">
+     <span class="badge" style="background:${u.color}">第${u.no}单元 · ${u.type}</span>
+     <h1 style="font-size:22px;margin-top:8px">${u.caseTitle}</h1>
+     <div style="color:#bcd2d2;font-size:13px;margin-top:2px">题目：《${esc(u.topic)}》${(EXAMPLES[u.id]&&CUR_ROOM!==0)?` &nbsp;<button class="btn ghost sm" id="exBtn" style="padding:5px 12px;font-size:12.5px">📖 回例文研习室</button>`:''}</div>
+   </div>${bar}`;
+  [renderStudy, renderAudit, renderOutline, renderBank, renderWrite, renderClose][CUR_ROOM](u,c,head);
+  if($('#exBtn')) $('#exBtn').onclick=()=>{sfx.click();gotoRoom(0);};
+}
+
+/* ---- 房间0：例文研习室（先学再写）---- */
+function renderStudy(u,c,head){
+  const exs=EXAMPLES[u.id]||[];
+  const studied=new Set(c.studied||[]);
+  screen.innerHTML=`${head}
+   <div class="center"><p class="sub" style="color:#bcd2d2">📖 <b>先学，再写！</b>这里有 ${exs.length} 篇<b>满分例文</b>（课本里的官方范文），
+   每篇都拆给你看：怎么搭架子、用了哪些"写作武器"。挑一篇喜欢的读一读，再去写自己的作文。</p>
+   <p class="stat" id="stStat"></p></div>
+   <div class="cases" style="margin-top:12px">
+     ${exs.map((e,i)=>`<button class="casecard" data-i="${i}" style="cursor:pointer">
+        <div class="stripe" style="background:${u.color}"></div>
+        <div class="no" style="background:${u.color};font-size:22px">${studied.has(i)?'✓':'📄'}</div>
+        <div style="flex:1;min-width:0">
+          <h3>《${esc(e.title)}》${e.sub?`<span style="font-size:12px;color:var(--ink2)"> · ${esc(e.sub)}</span>`:''}</h3>
+          <p>${esc(e.hook)}</p>
+        </div>
+        <div class="state"><span class="big">🔍</span>拆解</div>
+      </button>`).join('')}
+   </div>
+   ${navBtns(u,null,1,studied.size>=1,'学好了，去审题写作文 ✍️')}`;
+  function refresh(){
+    $('#stStat').textContent = studied.size?`已研习 ${studied.size}/${exs.length} 篇（够了就可以去写啦）`:'👆 先点开一篇，看看高分作文是怎么写的';
+    if($('#navNext')) $('#navNext').disabled = studied.size<1;
+  }
+  refresh();
+  screen.querySelectorAll('.casecard').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i;
+    openStudy(u,exs[i],()=>{ studied.add(i); c.studied=[...studied]; save(); const no=b.querySelector('.no'); if(no)no.textContent='✓'; refresh(); });
+  });
+  speak('例文研习室。先读一篇满分作文，看看人家用了哪些写作武器，学会了再去写。');
+  wireNav(null,1,()=> studied.size>=1 );
+}
+function openStudy(u, e, onRead){
+  sfx.click(); const m=$('#modal'); m.className='';
+  m.innerHTML=`<div class="card" style="text-align:left;max-width:580px">
+     <div class="center"><span class="badge" style="background:${u.color}">满分例文 · 第${u.no}单元</span>
+       <h2 style="font-family:'STKaiti',serif;margin:8px 0 2px;font-size:23px">《${esc(e.title)}》</h2></div>
+     <div style="white-space:pre-wrap;font-family:'STKaiti',serif;font-size:14.5px;line-height:1.9;background:#fffdf6;border:1.5px solid var(--brass);border-radius:11px;padding:13px;max-height:38vh;overflow:auto">${esc(e.text)}</div>
+     <div class="note" style="margin-top:10px"><b>📐 它的提纲（怎么搭架子）：</b><br>${esc(e.frame)}</div>
+     <div class="note" style="margin-top:8px;background:#eef0ff;border-color:#9aa6e6"><b>⚔️ 用了哪些写作武器：</b>
+       <div style="margin-top:5px">${e.wuqi.map(w=>`<div style="margin:4px 0"><span class="badge" style="background:${u.color};font-size:11px">${esc(w[0])}</span> <span style="font-size:13px;color:var(--ink)">${esc(w[1])}</span></div>`).join('')}</div></div>
+     <div class="row" style="margin-top:14px">
+       <button class="btn sm" id="stSpeak">🔊 读给我听</button>
+       <button class="btn sm" id="stOk">学到这一篇 ✔</button>
+     </div>
+   </div>`;
+  $('#stOk').onclick=()=>{ sfx.good(); modalClose(); if(onRead)onRead(); };
+  $('#stSpeak').onclick=()=>speak(e.text.replace(/\s+/g,''));
+  m.onclick=ev=>{ if(ev.target===m){ modalClose(); if(onRead)onRead(); } };
+}
+function gotoRoom(n){ CUR_ROOM=n; const c=cstate(CUR_UNIT); c.maxRoom=Math.max(c.maxRoom,n); save(); window.scrollTo(0,0); renderRoom(); }
+function navBtns(u,backN,nextN,nextOk,nextLabel){
+  return `<div class="row" style="margin-top:18px">
+     ${backN===null?`<button class="btn ghost sm" data-go="lobby">⬅ 返回案件板</button>`
+       :`<button class="btn ghost sm" id="navBack">⬅ 上一步</button>`}
+     ${nextN!==null?`<button class="btn" id="navNext" ${nextOk?'':'disabled'}>${nextLabel||'下一步 ▶'}</button>`:''}
+   </div>`;
+}
+function wireNav(backN,nextN,onNext){
+  if($('#navBack')) $('#navBack').onclick=()=>{sfx.click();gotoRoom(backN);};
+  if($('#navNext')) $('#navNext').onclick=()=>{ if(onNext&&onNext()===false)return; sfx.good(); gotoRoom(nextN); };
+}
+
+/* ---- 房间1：审题室 ---- */
+function renderAudit(u,c,head){
+  let chips;
+  if(u.emotionPick){
+    // 第4单元：审题 = 看题目说明，无圈词，直接进提纲选情绪
+    screen.innerHTML=`${head}
+     <div class="panel">
+       <p class="sub" style="color:var(--ink2)">🔐 ${esc(u.riddle)}</p>
+       <div class="note">📓 <b>题目：</b>《${u.topic}》<br><b>这类作文要做到：</b>${esc(u.goal)}<br><span style="color:var(--ink2)">${esc(u.fromText)}</span></div>
+       <div class="note" style="background:#eef0ff;border-color:#9aa6e6">🔎 <b>题眼：</b>题目里的"<b>他</b>"和那个"<b>＿＿了</b>"（情绪）就是题眼——
+       全文都要紧紧围绕"他"的这种情绪来写，而且<b>不能直接说出来</b>，要靠描写"演"出来。</div>
+       ${navBtns(u,0,2,true,'锁定情绪 ▶')}
+     </div>`;
+    speak('审题室。题目是，他，怎么了。要靠动作、语言、神态，把他的情绪演出来。');
+    wireNav(0,2);
+    return;
+  }
+  // 第1/5单元：圈题眼解锁
+  const pool = (u.eyePool&&u.eyePool.length)?u.eyePool:u.keyEye.slice();
+  const found = new Set(c._eyeFound||[]);
+  screen.innerHTML=`${head}
+   <div class="panel">
+     <p class="sub" style="color:var(--ink2)">🔐 ${esc(u.riddle)}</p>
+     <div class="note">📓 <b>题目：</b>《${u.topic}》<br><b>这类作文要做到：</b>${esc(u.goal)}<br><span style="color:var(--ink2)">${esc(u.fromText)}</span></div>
+     <p class="center" style="margin:14px 0 2px;font-weight:700;color:var(--ink)">👇 点出题目里最关键的"题眼"（共 ${u.keyEye.length} 个）</p>
+     <div class="wchips" id="wchips">
+       ${pool.map((w,i)=>`<button class="wc ${found.has(w)?'hit':''}" data-w="${esc(w)}">${esc(w)}</button>`).join('')}
+     </div>
+     <p class="center hint" id="eyeStat" style="color:var(--ink2)"></p>
+     ${navBtns(u,0,2,found.size>=u.keyEye.length,'进入提纲室 ▶')}
+   </div>`;
+  function refresh(){
+    $('#eyeStat').textContent = `已找到 ${found.size} / ${u.keyEye.length} 个题眼`;
+    if($('#navNext')) $('#navNext').disabled = found.size<u.keyEye.length;
+  }
+  refresh();
+  screen.querySelectorAll('.wc').forEach(b=>b.onclick=()=>{
+    const w=b.dataset.w;
+    if(found.has(w))return;
+    if(u.keyEye.includes(w)){
+      sfx.good(); found.add(w); b.classList.add('hit'); c._eyeFound=[...found]; save();
+      toast(`✔ 找到题眼「${w}」！`,1600);
+      if(found.size>=u.keyEye.length){ sfx.unlock(); c.eye=true; save(); toast('🔓 题眼齐了，提纲室大门打开！'); }
+      refresh();
+    }else{
+      sfx.bad(); b.classList.add('miss'); setTimeout(()=>b.classList.remove('miss'),420);
+      toast('这个不是题眼哦，再找找最关键的词～');
+    }
+  });
+  speak(`审题室。题目是，${u.topic}。先找出最关键的题眼。`);
+  wireNav(0,2,()=> found.size>=u.keyEye.length );
+}
+
+/* ---- 房间2：提纲室 ---- */
+function renderOutline(u,c,head){
+  const customKey = u.picks.some(p=>/自己想/.test(p.k));
+  screen.innerHTML=`${head}
+   <div class="panel">
+     <h4 style="font-family:'STKaiti',serif;color:var(--brass-d);margin:0 0 4px">🗺️ 破案路线（写作框架）</h4>
+     <ol class="steps">${u.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>
+     <h4 style="font-family:'STKaiti',serif;color:var(--brass-d);margin:16px 0 2px">🎯 ${esc(u.pickTitle)}</h4>
+     <div class="picks" id="picks">
+       ${u.picks.map(p=>`<button class="pick ${c.choice===p.k?'sel':''}" data-k="${esc(p.k)}">
+          <b>${esc(p.k)}</b><br><span style="font-size:13px;color:var(--ink2)">${esc(p.d)}</span></button>`).join('')}
+     </div>
+     <div id="customWrap" class="${(/自己想/.test(c.choice))?'':'hidden'}" style="margin-top:10px">
+       <input id="customIn" placeholder="写下你要写的人 / 事 / 特点…" value="${esc(c.choiceCustom||'')}"
+         style="width:100%;font-family:inherit;font-size:15px;border:1.5px solid var(--brass);border-radius:11px;padding:10px 12px;background:#fffdf6;outline:none">
+     </div>
+     ${navBtns(u,1,3,!!c.choice,'前往金句库 ▶')}
+   </div>`;
+  function refresh(){ if($('#navNext')) $('#navNext').disabled = !c.choice; }
+  screen.querySelectorAll('.pick').forEach(b=>b.onclick=()=>{
+    sfx.click(); c.choice=b.dataset.k; save();
+    screen.querySelectorAll('.pick').forEach(x=>x.classList.toggle('sel',x===b));
+    $('#customWrap').classList.toggle('hidden', !/自己想/.test(c.choice));
+    refresh();
+  });
+  if($('#customIn')) $('#customIn').oninput=e=>{ c.choiceCustom=e.target.value; save(); };
+  refresh();
+  speak('提纲室。先看破案路线，再选一个你要写的方向。');
+  wireNav(1,3,()=>!!c.choice);
+}
+
+/* ---- 房间3：金句库 ---- */
+function renderBank(u,c,head){
+  const need=3;
+  const cats=Object.entries(u.bank);
+  screen.innerHTML=`${head}
+   <div class="center"><p class="sub" style="color:#bcd2d2">🗝️ 这是"金句武器库"——例文里那些好句的<b>同款</b>，按写作武器分好类了。
+   点亮你喜欢的<b>装备</b>起来（至少 ${need} 句），写作文时一点就能"插入"。</p>
+   <p class="stat" id="sCount"></p></div>
+   <div class="panel" style="margin-top:12px">
+     ${cats.map(([cat,arr])=>`
+       <div class="scat">
+         <h4>${esc(cat)}</h4>
+         ${arr.map(s=>`<button class="sent ${c.sentences.includes(s)?'on':''}" data-s="${esc(s)}"><span class="tick">✔ 已装备</span>${esc(s)}</button>`).join('')}
+       </div>`).join('')}
+     <div class="note" style="margin-top:14px">✨ <b>好词也带上：</b>${u.words.map(w=>`<span class="badge" style="background:#efe2bf;color:#6a4f17;margin:2px">${esc(w)}</span>`).join('')}</div>
+     ${navBtns(u,2,4,c.sentences.length>=need,'进入创作室 ✍️')}
+   </div>`;
+  function refresh(){
+    $('#sCount').textContent=`已装备 ${c.sentences.length} 句金句`;
+    if($('#navNext')) $('#navNext').disabled=c.sentences.length<need;
+  }
+  refresh();
+  screen.querySelectorAll('.sent').forEach(b=>b.onclick=()=>{
+    const s=b.dataset.s; const i=c.sentences.indexOf(s);
+    if(i>=0){ c.sentences.splice(i,1); b.classList.remove('on'); sfx.click(); }
+    else{ c.sentences.push(s); b.classList.add('on'); sfx.good(); }
+    save(); refresh();
+  });
+  speak('金句武器库。挑你喜欢的好句子装备起来，至少三句。');
+  wireNav(2,4,()=>c.sentences.length>=need);
+}
+
+/* ---- 房间4：创作室（大填空） ---- */
+let LAST_FOCUS=null;
+function renderWrite(u,c,head){
+  screen.innerHTML=`${head}
+   <div class="center"><p class="sub" style="color:#bcd2d2">✍️ 这是<b>创作室</b>。先在下面的"填空"里写下你的真实故事，
+   再点 <b>「一键拼成初稿」</b>，最后在大框里读一读、改一改，写满 <b>400 字</b>左右就大功告成！</p></div>
+   <div class="note" style="margin-top:8px;background:#eef0ff;border-color:#9aa6e6">⚔️ <b>写作武器小抄</b>（刚在例文研习室学过，写的时候记得用）：${WEAPON_TIPS[u.id]||''}</div>
+
+   <div class="panel" style="margin-top:12px">
+     <h4 style="font-family:'STKaiti',serif;color:var(--brass-d);margin:0 0 6px">🧩 大填空：把你的故事填进去
+       ${u.emotionPick&&c.choice?`<span class="badge" style="background:${u.color};margin-left:6px">他${esc(c.choice)}</span>`:''}
+       ${!u.emotionPick&&c.choice?`<span class="badge" style="background:${u.color};margin-left:6px">${esc(/自己想/.test(c.choice)?(c.choiceCustom||'自定'):c.choice)}</span>`:''}
+     </h4>
+     ${c.sentences.length?`<div style="font-size:13px;color:var(--ink2);margin:2px 0 6px">👇 这是你在金句库装备的 <b>${c.sentences.length}</b> 句金句，点 <b>＋</b> 就能插到正在写的空里：</div>
+     <div class="jbank">${c.sentences.map(s=>`<div class="jrow"><button class="jins" data-ins="${esc(s)}" title="插入这句">＋</button><span>${esc(s)}</span></div>`).join('')}</div>`:''}
+
+     ${u.fields.map(f=>`
+       <div class="field">
+         <label>${esc(f.label)} <span class="tip">— ${esc(f.tip)}</span></label>
+         <textarea data-fk="${f.key}" placeholder="${esc(f.ph)}">${esc(c.fields[f.key]||'')}</textarea>
+       </div>`).join('')}
+
+     <div class="row" style="margin:8px 0 4px">
+       <button class="btn sm dark" id="stitch">🧵 一键拼成初稿 ▼</button>
+       <button class="btn ghost sm" id="clearDraft">清空大框</button>
+     </div>
+
+     <label style="display:block;font-weight:700;color:var(--ink);margin:10px 0 5px">📝 我的作文初稿（可以自由修改、补充）</label>
+     <textarea class="draftbox" id="draft" placeholder="点上面「一键拼成初稿」，你填的内容就会拼到这里。你也可以直接在这里写、在这里改。">${esc(c.draft||'')}</textarea>
+     <div class="meta">
+       <span>字数：<b id="wc">${cnLen(c.draft)}</b> 字 <span style="color:#999">（建议 400-450）</span></span>
+       <span class="hint" style="margin:0">🔊 可点金句听读音</span>
+     </div>
+     ${navBtns(u,3,5,true,'去结案厅·提交 ▶')}
+   </div>`;
+
+  const draft=$('#draft');
+  const fieldEls=[...screen.querySelectorAll('textarea[data-fk]')];
+  fieldEls.forEach(t=>{
+    t.addEventListener('focus',()=>LAST_FOCUS=t);
+    t.addEventListener('input',()=>{ c.fields[t.dataset.fk]=t.value; save(); });
+  });
+  draft.addEventListener('focus',()=>LAST_FOCUS=draft);
+  draft.addEventListener('input',()=>{ c.draft=draft.value; $('#wc').textContent=cnLen(draft.value); save(); });
+
+  $('#stitch').onclick=()=>{
+    sfx.good();
+    const stitched = u.compose(c.fields);
+    let title = caseTitle(u,c);
+    const body = stitched.trim() ? `　　${stitched}` : '';
+    const text = `${title}\n\n　　${body? stitched.replace(/\n\s*/g,'\n　　') : '（先在上面的填空里写下你的故事，再点这里拼成初稿）'}`;
+    draft.value = text; c.draft=text; $('#wc').textContent=cnLen(text); save();
+    draft.focus(); toast('🧵 已拼成初稿！现在读一读、改一改，让它更通顺～');
+  };
+  $('#clearDraft').onclick=()=>{ if(confirm('清空下面的大框？（你上面填的内容不会丢）')){ draft.value='';c.draft='';$('#wc').textContent='0';save(); } };
+
+  screen.querySelectorAll('.jins').forEach(ch=>ch.onclick=()=>{
+    const s=ch.dataset.ins;
+    const target = (LAST_FOCUS&&document.contains(LAST_FOCUS))?LAST_FOCUS:draft;
+    insertAtCursor(target, (target.value&&!/\s$/.test(target.value)?'':'')+s);
+    if(target===draft){ c.draft=draft.value; $('#wc').textContent=cnLen(draft.value); }
+    else { c.fields[target.dataset.fk]=target.value; }
+    save(); sfx.click(); speak(s);
+  });
+  speak('创作室。把你的故事填进每一个空，再拼成初稿。');
+  wireNav(3,5);
+}
+function insertAtCursor(el,text){
+  el.focus();
+  const s=el.selectionStart??el.value.length, e=el.selectionEnd??el.value.length;
+  el.value = el.value.slice(0,s)+text+el.value.slice(e);
+  const pos=s+text.length; el.selectionStart=el.selectionEnd=pos;
+}
+
+/* ---- 房间5：结案厅（提交 / 交给侦探长批改） ---- */
+function buildPackage(u,c){
+  const choiceTxt = /自己想/.test(c.choice) ? (c.choiceCustom||c.choice) : c.choice;
+  const lines=[];
+  lines.push('【美美的作文 · 待"侦探长"复审】');
+  lines.push(`单元：第${u.no}单元 · ${u.type}`);
+  lines.push(`题目：《${caseTitle(u,c)}》`);
+  lines.push(`方向：${choiceTxt||'（未选）'}`);
+  lines.push(`日期：${today()}`);
+  lines.push('————————————————————');
+  lines.push('■ 我装备的金句：');
+  (c.sentences||[]).forEach(s=>lines.push('  · '+s));
+  lines.push('————————————————————');
+  lines.push('■ 我的作文初稿：');
+  lines.push('');
+  lines.push((c.draft||'（空）').trim());
+  lines.push('');
+  lines.push('————————————————————');
+  lines.push('【请侦探长按"满分30、只扣3分"的高标准批改】：');
+  lines.push('1) 评分（30分制）+ 简短总评；2) 逐处说"这句怎么改更好"（保留孩子原意）；');
+  lines.push('3) 给一篇"只扣3分"的优化范文；4) 用上老师方法：审题、选材、详略、五种描写、真情实感、卷面。');
+  return lines.join('\n');
+}
+function renderClose(u,c,head){
+  const wc=cnLen(c.draft);
+  const enough=wc>=120;
+  const title = caseTitle(u,c);
+  const AI = !!window.AI_OK;
+  screen.innerHTML=`${head}
+   <div class="center"><p class="sub" style="color:#bcd2d2">🔒 这是<b>结案厅</b>。初稿写好了，让<b>侦探长</b>${AI?'<b>一键</b>给你批改、生成优化范文！':'按高标准批改、给范文！'}</p></div>
+
+   <div class="panel" style="margin-top:12px">
+     <h4 style="font-family:'STKaiti',serif;color:var(--brass-d);margin:0 0 8px">📄 你的作文：《${esc(title)}》 <span style="font-size:13px;color:var(--ink2)">（${wc} 字）</span></h4>
+     <div class="draftbox" style="min-height:160px;white-space:pre-wrap" id="preview">${esc(c.draft||'（你还没写初稿，回创作室写一写吧）')}</div>
+     ${!enough?`<p class="hint" style="color:#b06a2a">✦ 初稿还有点短（建议先写到 120 字以上，再交给侦探长效果最好）。</p>`:''}
+
+     ${AI ? `
+     <div class="center" style="margin-top:18px">
+       <button class="btn" id="aiBtn" style="font-size:18px;padding:15px 32px">✨ 让侦探长 AI 一键批改</button>
+       <div class="hint" style="color:#bcd2d2;margin-top:7px">生成「优化范文（400-450字）+ 作文体检」,约 20-40 秒,别关页面</div>
+     </div>
+     <div id="aiResult" style="margin-top:14px"></div>
+     <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--ink2);font-size:13px">▸ 或:手动复制/下载,交给爸爸的 Claude Code(离线时用)</summary>
+       <div class="row" style="margin-top:10px">
+         <button class="btn ghost sm" id="copyBtn">📋 复制初稿</button>
+         <button class="btn ghost sm" id="dlBtn">💾 下载任务文件</button>
+       </div>
+     </details>
+     ` : `
+     <div class="row" style="margin-top:14px">
+       <button class="btn dark" id="copyBtn">📋 复制初稿（交给侦探长）</button>
+       <button class="btn ghost sm" id="dlBtn">💾 下载任务文件</button>
+     </div>
+     <div class="note" style="margin-top:14px">
+       <b>📨 怎么交给侦探长批改？（爸爸看）</b><br>
+       1）点「复制初稿」或「下载任务文件」；<br>
+       2）打开 <b>Claude Code</b>，把内容发给它，说一句 <b>"批改美美的作文"</b>；<br>
+       3）侦探长会给：<b>体检 + 怎么改 + 优化范文</b>，并存到 <b>作品集\\已批改</b>。<br>
+       <span style="color:var(--ink2)">（想让美美自己点一下就出结果？用《双击启动·AI批改版.bat》打开本游戏。）</span>
+     </div>
+     <div style="margin-top:16px">
+       <label style="display:block;font-weight:700;color:var(--ink);margin-bottom:5px">🏅 侦探长的批改回来了？贴到这里存档（可选）：</label>
+       <textarea id="reviewIn" class="field" style="width:100%;min-height:90px;font-family:inherit;font-size:14px;border:1.5px solid #e0cb98;border-radius:11px;padding:10px 12px;background:#fffdf6;outline:none" placeholder="把侦探长给的体检和优化范文粘贴到这里">${esc(c.review||'')}</textarea>
+     </div>
+     `}
+
+     <div class="row" style="margin-top:18px">
+       <button class="btn ghost sm" id="navBack">⬅ 回创作室改改</button>
+       <button class="btn" id="seal">🔒 封存进作品集</button>
+     </div>
+   </div>`;
+
+  if($('#copyBtn')) $('#copyBtn').onclick=async()=>{
+    const pkg=buildPackage(u,c);
+    try{ await navigator.clipboard.writeText(pkg); sfx.good(); toast('📋 已复制！去 Claude Code 发给侦探长，说"批改美美的作文"'); }
+    catch(e){ // 回退：弹窗手动复制
+      const m=$('#modal'); m.className=''; m.innerHTML=`<div class="card"><h3 style="margin-top:0">手动复制下面内容</h3>
+        <textarea style="width:100%;min-height:240px;font-size:13px" readonly>${esc(pkg)}</textarea>
+        <div class="row" style="margin-top:10px"><button class="btn sm" id="mClose">好了</button></div></div>`;
+      $('#mClose').onclick=modalClose; }
+  };
+  if($('#dlBtn')) $('#dlBtn').onclick=()=>{
+    const pkg=buildPackage(u,c);
+    const fn=`作文_第${u.no}单元_${state.name}_${nowStamp()}.txt`;
+    const blob=new Blob(['﻿'+pkg],{type:'text/plain;charset=utf-8'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fn;
+    document.body.appendChild(a); a.click(); a.remove();
+    sfx.good(); toast('💾 已下载，把它放进"作品集\\待批改"，再让侦探长批改～',3200);
+  };
+  if($('#reviewIn')) $('#reviewIn').oninput=e=>{ c.review=e.target.value; save(); };
+  if($('#aiBtn')) $('#aiBtn').onclick=()=>aiGrade(u,c);
+  $('#navBack').onclick=()=>{sfx.click();gotoRoom(4);};
+  $('#seal').onclick=()=>sealCase(u,c);
+}
+
+/* ---- AI 一键批改（结案厅，本地服务在线时可用） ---- */
+async function aiGrade(u,c){
+  const btn=$('#aiBtn'), box=$('#aiResult');
+  if(!btn||btn.disabled) return;
+  if(cnLen(c.draft)<40){ toast('初稿太短啦，先回创作室多写一点～'); return; }
+  btn.disabled=true; sfx.click();
+  box.innerHTML=`<div class="panel" style="text-align:center">
+     <div style="font-size:36px">🕵️‍♂️</div>
+     <p style="font-weight:700;color:var(--ink);margin:6px 0 2px">侦探长正在逐字批改…</p>
+     <p class="hint" style="color:var(--ink2);margin:0">审题 → 放慢镜头 → 数字数 → 写体检（约 20-40 秒，别关页面）</p>
+     <div class="bar"><i id="aiBar"></i></div></div>`;
+  let p=6; const tk=setInterval(()=>{ p=Math.min(94,p+Math.random()*6); const b=$('#aiBar'); if(b)b.style.width=p+'%'; },650);
+  try{
+    const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({unit_no:u.no, title:caseTitle(u,c), choice:c.choice, draft:c.draft, sentences:c.sentences})});
+    const data=await r.json(); clearInterval(tk);
+    const b=$('#aiBar'); if(b)b.style.width='100%';
+    if(!data.ok){ box.innerHTML=`<div class="note" style="border-color:var(--bad);background:#fdeceb">⚠️ ${esc(data.error||'批改失败，请重试')}</div>`; btn.disabled=false; sfx.bad(); return; }
+    sfx.win(); confetti();
+    renderAIResult(u,c,data);
+  }catch(e){
+    clearInterval(tk);
+    box.innerHTML=`<div class="note" style="border-color:var(--bad);background:#fdeceb">⚠️ 连不上批改服务。请用《双击启动·AI批改版.bat》打开本游戏再试。<br><span style="color:var(--ink2)">${esc(String(e).slice(0,120))}</span></div>`;
+    btn.disabled=false; sfx.bad();
+  }
+}
+function aiMark(m){ return /✓/.test(m)?'<span style="color:var(--ok)">✓</span>':(/✗/.test(m)?'<span style="color:var(--bad)">✗</span>':'<span style="color:var(--brass-d)">△</span>'); }
+function renderAIResult(u,c,data){
+  const box=$('#aiResult');
+  const rows=(data.checklist||[]).map(x=>`<tr>
+     <td style="padding:6px 9px;border:1px solid #e6d3a4">${esc(x.name)}</td>
+     <td style="text-align:center;border:1px solid #e6d3a4;font-weight:800;font-size:16px">${aiMark(x.mark)}</td>
+     <td style="padding:6px 9px;border:1px solid #e6d3a4;color:var(--ink2);font-size:13px">${esc(x.note||'')}</td></tr>`).join('');
+  const wcCls=data.in_range?'var(--ok)':'var(--bad)';
+  box.innerHTML=`<div class="panel" style="border-color:var(--ok)">
+     <div class="center"><span class="badge" style="background:var(--u5)">参考档位：${esc(data.band||'良好')}</span></div>
+     <h4 style="font-family:'STKaiti',serif;color:var(--brass-d);margin:12px 0 6px">🩺 作文体检（重点看逻辑连贯）</h4>
+     <table style="width:100%;border-collapse:collapse;font-size:14px">${rows}</table>
+     ${(data.logic&&data.logic.length)?`<div class="note" style="margin-top:8px">🧠 <b>逻辑连贯：</b>${data.logic.map(esc).join('；')}</div>`:''}
+     <div class="note" style="margin-top:8px;background:#eef6ef;border-color:#b9dcc4">⭐ <b>总评：</b>${esc(data.summary||'')}
+       ${(data.fixes&&data.fixes.length)?`<br><b>最该改：</b>${data.fixes.map(esc).join('；')}`:''}</div>
+     <h4 style="font-family:'STKaiti',serif;color:var(--brass-d);margin:14px 0 6px">✨ 优化范文 · <span style="color:${wcCls};font-weight:800">${data.word_count}字</span> ${data.in_range?'✅达标':'⚠️'}</h4>
+     <div class="draftbox" style="white-space:pre-wrap;min-height:auto">${esc(data.article)}</div>
+     <div class="row" style="margin-top:12px">
+       <button class="btn sm" id="aiCopy">📋 复制范文</button>
+       <span class="hint" style="margin:0;color:var(--ink2)">📁 已存档：${esc(data.saved||'作品集\\已批改')}</span>
+     </div></div>`;
+  if($('#aiCopy')) $('#aiCopy').onclick=async()=>{ try{await navigator.clipboard.writeText(data.article);toast('📋 已复制范文');}catch(e){toast('复制失败，可长按选择');} };
+  c.review=`【AI 优化范文 · ${data.word_count}字 · ${data.band}】\n${data.article}`;
+  c.aiData=data; c.score='';
+  saveToGallery(u,c);
+  toast('🏅 已结案，范文和体检都存进作品集啦！',3000);
+}
+function saveToGallery(u,c){
+  const title = caseTitle(u,c);
+  const id = c.sealId || (u.id+'_'+nowStamp());
+  c.sealId=id;
+  const ai = c.aiData||null;
+  const rec={ id, openId:u.id+'_'+id, unit:u.no, color:u.color, title, type:u.type,
+    date:today(), draft:c.draft, sentences:(c.sentences||[]).slice(), choice:c.choice,
+    review:c.review||'', score:c.score||'',
+    band: ai?ai.band:'', wordCount: ai?ai.word_count:'', article: ai?ai.article:'', saved: ai?ai.saved:'' };
+  const ex = state.gallery.find(g=>g.id===id);
+  if(ex){ Object.assign(ex,rec); } else { state.gallery.unshift(rec); }
+  c.submitted=true; c.maxRoom=5; save();
+  return rec;
+}
+function sealCase(u,c){
+  if(cnLen(c.draft)<40){ toast('初稿太短啦，先回创作室多写一点～'); return; }
+  const title = caseTitle(u,c);
+  saveToGallery(u,c);
+  sfx.win(); confetti();
+  const m=$('#modal'); m.className='';
+  m.innerHTML=`<div class="card">
+     <div style="font-size:46px">🏅</div>
+     <h2 style="font-family:'STKaiti',serif;margin:4px 0">结案成功！</h2>
+     <p class="sub" style="color:var(--ink2)">《${esc(title)}》已封存进你的作品集。<br>
+     ${c.review?'侦探长的批改也存好啦！':'记得把初稿交给侦探长批改、拿高分哦～'}</p>
+     <div class="row" style="margin-top:14px">
+       <button class="btn sm" data-go="gallery" id="mGal">📁 看作品集</button>
+       <button class="btn ghost sm" data-go="lobby" id="mLob">🕵️ 回案件板</button>
+     </div>
+   </div>`;
+  $('#mGal').onclick=()=>{modalClose();go('gallery');};
+  $('#mLob').onclick=()=>{modalClose();go('lobby');};
+}
+
+/* ===================== 作品集 ===================== */
+function renderGallery(){
+  if(!state.gallery.length){
+    screen.innerHTML=`<div class="center"><h1 style="font-size:22px">📁 我的作品集</h1>
+      <p class="sub">还没有作品哦。去破一个案子，写出你的第一篇作文吧！</p>
+      <div class="row" style="margin-top:16px"><button class="btn" data-go="lobby">🔍 去破案</button></div></div>`;
+    return;
+  }
+  screen.innerHTML=`<div class="center"><h1 style="font-size:22px">📁 我的作品集</h1>
+     <p class="stat">这里保存着你写过的每一篇作文初稿和侦探长的批改</p></div>
+   <div class="glist">
+     ${state.gallery.map(g=>`<div class="gitem" data-id="${g.id}">
+        <div class="gno" style="background:${g.color||'var(--brass)'}">${g.unit}</div>
+        <div style="flex:1;min-width:0">
+          <h4>《${esc(g.title)}》</h4>
+          <p>${esc(g.type)} · ${g.date} · ${cnLen(g.draft)}字</p>
+        </div>
+        ${g.band?`<div class="scoretag" style="color:var(--u5)">${esc(g.band)}<small>AI体检</small></div>`:(g.score?`<div class="scoretag">${esc(String(g.score))}<small>/30分</small></div>`:`<div class="scoretag" style="color:#aaa">未评<small>分</small></div>`)}
+      </div>`).join('')}
+   </div>
+   <div class="row" style="margin-top:16px"><button class="btn ghost sm" data-go="lobby">⬅ 返回案件板</button></div>`;
+  screen.querySelectorAll('.gitem').forEach(b=>b.onclick=()=>openGallery(b.dataset.id));
+}
+function openGallery(id){
+  const g=state.gallery.find(x=>x.id===id); if(!g)return;
+  const m=$('#modal'); m.className='';
+  m.innerHTML=`<div class="card" style="text-align:left;max-width:520px">
+     <div class="center"><span class="badge" style="background:${g.color}">第${g.unit}单元</span>
+       <h2 style="font-family:'STKaiti',serif;margin:8px 0 2px;font-size:24px">《${esc(g.title)}》</h2>
+       <p style="color:var(--ink2);font-size:13px;margin:0">${esc(g.type)} · ${g.date}${g.band?` · 体检：${esc(g.band)}`:(g.score?` · 得分 ${esc(String(g.score))}/30`:'')}</p></div>
+     <h4 style="color:var(--brass-d);margin:14px 0 4px">📝 作文初稿</h4>
+     <div style="white-space:pre-wrap;font-family:'STKaiti',serif;font-size:15px;line-height:1.9;background:#fffdf6;border:1.5px solid #e6d3a4;border-radius:11px;padding:12px;max-height:28vh;overflow:auto">${esc(g.draft)}</div>
+     ${g.article?`<h4 style="color:var(--brass-d);margin:14px 0 4px">✨ AI 优化范文 <span style="font-size:12px;color:var(--ink2)">（${g.wordCount}字）</span></h4>
+       <div style="white-space:pre-wrap;font-family:'STKaiti',serif;font-size:15px;line-height:1.95;background:#fffdf6;border:1.5px solid var(--brass);border-radius:11px;padding:12px;max-height:34vh;overflow:auto">${esc(g.article)}</div>
+       ${g.saved?`<p class="hint" style="color:var(--ink2);margin-top:6px">📁 完整体检记录：${esc(g.saved)}</p>`:''}`
+      : g.review?`<h4 style="color:var(--brass-d);margin:14px 0 4px">🏅 侦探长的批改</h4>
+       <div style="white-space:pre-wrap;font-size:14px;line-height:1.7;background:#eef6ef;border:1.5px solid #b9dcc4;border-radius:11px;padding:12px;max-height:30vh;overflow:auto">${esc(g.review)}</div>`
+      :`<div class="note" style="margin-top:12px">还没批改。用《双击启动·AI批改版.bat》打开游戏、在结案厅点"✨ AI 一键批改"，或交给爸爸的 Claude Code。</div>`}
+     <div class="row" style="margin-top:16px">
+       <button class="btn sm" id="gCopy">📋 复制初稿</button>
+       <button class="btn ghost sm" id="gDel">🗑 删除</button>
+       <button class="btn ghost sm" id="gClose">关闭</button>
+     </div>
+   </div>`;
+  $('#gClose').onclick=modalClose;
+  $('#gCopy').onclick=async()=>{ try{await navigator.clipboard.writeText(g.draft);toast('📋 已复制初稿');}catch(e){toast('复制失败，可长按选择');} };
+  $('#gDel').onclick=()=>{ if(confirm('删除这篇作品？无法恢复。')){ state.gallery=state.gallery.filter(x=>x.id!==id); save(); modalClose(); go('gallery'); } };
+}
+
+/* ===================== 提分秘籍 ===================== */
+function renderSecrets(){
+  screen.innerHTML=`<div class="center"><h1 style="font-size:23px">📜 破案守则 · 提分秘籍</h1>
+     <p class="sub">老师常说的"高分作文六件事"，写每一篇作文前都看一眼👇</p></div>
+   <div class="panel" style="margin-top:12px">
+     ${SECRETS.map(s=>`<div class="note" style="margin-top:10px"><b style="font-size:15px">${s.icon} ${esc(s.t)}</b><br>${esc(s.d)}</div>`).join('')}
+     <div class="note" style="margin-top:14px;background:#eef0ff;border-color:#9aa6e6">
+       <b>🧠 三套官方框架（记牢它）：</b><br>
+       · <b>第1单元《那一刻，我长大了》</b>＝ 经过写清楚 ＋ 把"那一刻"放慢写具体(所见所闻所思) ＋ 真情实感点"长大"。<br>
+       · <b>第4单元《他＿＿了》</b>＝ 明确情绪·围绕情绪选材 ＋ 前因后果 ＋ 情绪那段详写 ＋ 不直接说情绪、用动作/语言/神态/心理"演"出来。<br>
+       · <b>第5单元《形形色色的人》</b>＝ 抓一个鲜明特点 ＋ 典型事例 ＋ 五种描写 ＋ 比喻/排比 ＋ 侧面烘托。
+     </div>
+     <div class="note" style="margin-top:10px;background:#eef0ff;border-color:#9aa6e6">⚔️ <b>写作武器（在"例文研习室"里看高分作文怎么用）：</b>对比/设问/引用开头 · 慢镜头 · 排比叠加 · 五感+比喻 · 夸张 · 侧面烘托 · 首尾呼应 · 情绪"演"不"说" · 以时间感写沉醉。</div>
+   </div>
+   <div class="row" style="margin-top:16px"><button class="btn ghost sm" data-go="lobby">⬅ 返回案件板</button>
+     <button class="btn ghost sm" id="readAll">🔊 读给我听</button></div>`;
+  $('#readAll').onclick=()=>speak(SECRETS.map(s=>s.t+'。'+s.d).join(' '));
+}
+
+/* ===================== 证书 ===================== */
+function renderCert(){
+  const date=today();
+  screen.innerHTML=`
+   <div class="center">
+     <div class="row">${SVG.detective}</div>
+     <h1 style="font-size:23px">三案全破！</h1>
+     <p class="sub">你闯过了三座作文密室，写出了三篇属于自己的作文。<br>作文侦探社授予你最高荣誉——</p>
+   </div>
+   <div id="cert">
+     <div class="seal">作 文 侦 探 社</div>
+     <h2>金牌作文侦探证书</h2>
+     <div class="body">兹证明</div>
+     <div class="name">${esc(state.name)}</div>
+     <div class="body">已成功侦破"作文三大谜案"，<br>掌握 写事·成长 / 写人·内心 / 写人·抓特点 三类作文，<br>特授予 <b>「金牌作文侦探」</b> 称号！</div>
+     <div class="tags"><span>那一刻，我长大了</span><span>他＿＿了</span><span>形形色色的人</span></div>
+     <div class="body" style="margin-top:6px">颁发日期：${date}</div>
+     <div class="stamp">作文<br>侦探社<br>★认证★</div>
+   </div>
+   <div class="center"><div class="row" style="margin-top:6px">
+     <button class="btn" id="printBtn">🖨️ 打印 / 保存证书</button>
+     <button class="btn ghost sm" data-go="lobby">返回案件板</button>
+   </div></div>`;
+  $('#printBtn').onclick=()=>window.print();
+}
+
+/* ===================== 撒花 ===================== */
+function confetti(){
+  const c=$('#confetti'); c.classList.remove('hidden');
+  const ctx=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight;
+  const colors=['#e0bd63','#e0843c','#6f7fd6','#cf5a7e','#6bbf8a','#fff0b0'];
+  const P=Array.from({length:150},(_,i)=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,
+    r:5+Math.random()*7,vy:2+Math.random()*4,vx:-2.5+Math.random()*5,a:Math.random()*6,va:-.2+Math.random()*.4,
+    col:colors[i%colors.length]}));
+  let f=0;
+  (function loop(){ f++; ctx.clearRect(0,0,c.width,c.height);
+    P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.a+=p.va;
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.fillStyle=p.col;
+      ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.62);ctx.restore();});
+    if(f<240)requestAnimationFrame(loop); else {ctx.clearRect(0,0,c.width,c.height);c.classList.add('hidden');}
+  })();
+}
+
+/* ===================== 启动 ===================== */
+$('#btnSound').textContent=state.sound?'🔊':'🔇';
+go('home');
+
+/* 探测本地 AI 批改服务（用《双击启动·AI批改版.bat》打开时才有）。探到就开"一键批改" */
+window.AI_OK=false;
+fetch('/api/health',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{
+  if(j&&j.ok){ window.AI_OK=true; if(cur==='room'&&CUR_ROOM===4){ renderRoom(); } }
+}).catch(()=>{});
+</script>
+</body>
+</html>
