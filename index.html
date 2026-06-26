@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>作文侦探社 · 三大谜案</title>
+<title>作文侦探社 · 单元作文大闯关</title>
 <style>
   :root{
     --teal1:#0e2a33; --teal2:#16323d; --cream:#fbf3e2; --cream2:#f3e6c4;
@@ -196,7 +196,7 @@
 </head>
 <body>
   <header>
-    <div class="ttl">作文侦探社<small>三大谜案</small></div>
+    <div class="ttl">作文侦探社<small>单元作文大闯关</small></div>
     <div class="row" style="gap:8px">
       <button class="iconbtn" id="btnSound" title="声音开关">🔊</button>
       <button class="iconbtn" id="btnGallery" title="作品集">📁</button>
@@ -208,10 +208,10 @@
   <div id="modal" class="hidden"></div>
   <div id="toast"></div>
   <canvas id="confetti" class="hidden"></canvas>
-  <footer>给家长：这是给五年级孩子练作文的"密室解密"游戏，覆盖第1、4、5单元三类作文。孩子闯五个房间——审题→提纲→金句→创作→结案，最后写出自己的初稿。<br>初稿可一键复制/下载，交给"侦探长"（爸爸的 Claude Code）按"只扣3分"的高标准批改、给范文。详见同文件夹《给爸爸·作文批改怎么用》。</footer>
+  <footer>给家长：这是给五年级孩子练作文的"密室解密"游戏，覆盖第 1·2·4·5·6·7·8 共 7 个单元的作文（跳过综合性学习的第3单元）。孩子闯六个房间——例文研习→审题→提纲→金句→创作→结案，最后写出自己的初稿。<br>初稿可一键复制/下载，交给"侦探长"（爸爸的 Claude Code）或用 AI 批改版按"只扣3分"的高标准批改、给范文。详见同文件夹《给爸爸·作文批改怎么用》。</footer>
 
 <script>
-/* ===================== 数据：三大谜案（第1/4/5单元） ===================== */
+/* ===================== 数据：各单元（题目+方法+提纲+大填空） ===================== */
 const UNITS = [
   /* ---------------- 第1单元 ---------------- */
   {
@@ -703,7 +703,7 @@ function renderHome(){
   screen.innerHTML=`
    <div class="center">
      <div class="row" style="margin-top:6px">${SVG.detective}</div>
-     <h1>作文侦探社 · 三大谜案</h1>
+     <h1>作文侦探社 · 单元作文大闯关</h1>
      <p class="sub">欢迎加入<b style="color:#ffd27a">作文侦探社</b>！这里有三桩棘手的"作文谜案"，
      分别藏在第 <b>1</b>、<b>4</b>、<b>5</b> 单元的密室里。<br><br>
      小侦探 <b style="color:#ffd27a">${esc(state.name)}</b>，你要闯过每个案子的五个房间——
