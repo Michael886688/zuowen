@@ -991,13 +991,13 @@ function renderWrite(u,c,head){
   const fieldEls=[...screen.querySelectorAll('textarea[data-fk]')];
   fieldEls.forEach(t=>{
     t.addEventListener('focus',()=>LAST_FOCUS=t);
-    t.addEventListener('input',()=>{ c.fields[t.dataset.fk]=t.value; save(); });
+    t.addEventListener('input',()=>{ markEdited(c); c.fields[t.dataset.fk]=t.value; save(); });
   });
   draft.addEventListener('focus',()=>LAST_FOCUS=draft);
-  draft.addEventListener('input',()=>{ c.draft=draft.value; $('#wc').textContent=cnLen(draft.value); save(); });
+  draft.addEventListener('input',()=>{ markEdited(c); c.draft=draft.value; $('#wc').textContent=cnLen(draft.value); save(); });
 
   $('#stitch').onclick=()=>{
-    sfx.good();
+    sfx.good(); markEdited(c);
     const stitched = u.compose(c.fields);
     let title = caseTitle(u,c);
     const body = stitched.trim() ? `　　${stitched}` : '';
@@ -1173,13 +1173,17 @@ function renderAIResult(u,c,data){
   saveToGallery(u,c);
   toast('🏅 已结案，范文和体检都存进作品集啦！',3000);
 }
+/* 一旦改动初稿，就当成"新的一篇"：清掉本次封存的 id，下次封存会另存一条新记录，不覆盖旧的 */
+function markEdited(c){ if(c.sealId){ c.sealId=null; c.submitted=false; c.aiData=null; c.review=''; c.score=''; } }
 function saveToGallery(u,c){
   const title = caseTitle(u,c);
-  const id = c.sealId || (u.id+'_'+nowStamp());
+  const id = c.sealId || (u.id+'_'+Date.now()+'_'+Math.floor(Math.random()*100000));   // 每篇唯一；同一篇内(未改动)再次封存/批改则更新这条
   c.sealId=id;
   const ai = c.aiData||null;
+  const d=new Date(); const pp=n=>String(n).padStart(2,'0');
   const rec={ id, openId:u.id+'_'+id, unit:u.no, color:u.color, title, type:u.type,
-    date:today(), draft:c.draft, sentences:(c.sentences||[]).slice(), choice:c.choice,
+    date:today(), time:`${pp(d.getHours())}:${pp(d.getMinutes())}`, ts:d.getTime(),
+    draft:c.draft, sentences:(c.sentences||[]).slice(), choice:c.choice,
     review:c.review||'', score:c.score||'',
     band: ai?ai.band:'', wordCount: ai?ai.word_count:'', article: ai?ai.article:'', saved: ai?ai.saved:'' };
   const ex = state.gallery.find(g=>g.id===id);
@@ -1222,7 +1226,7 @@ function renderGallery(){
         <div class="gno" style="background:${g.color||'var(--brass)'}">${g.unit}</div>
         <div style="flex:1;min-width:0">
           <h4>《${esc(g.title)}》</h4>
-          <p>${esc(g.type)} · ${g.date} · ${cnLen(g.draft)}字</p>
+          <p>${esc(g.type)} · ${g.date}${g.time?' '+g.time:''} · ${cnLen(g.draft)}字</p>
         </div>
         ${g.band?`<div class="scoretag" style="color:var(--u5)">${esc(g.band)}<small>AI体检</small></div>`:(g.score?`<div class="scoretag">${esc(String(g.score))}<small>/30分</small></div>`:`<div class="scoretag" style="color:#aaa">未评<small>分</small></div>`)}
       </div>`).join('')}
@@ -1236,7 +1240,7 @@ function openGallery(id){
   m.innerHTML=`<div class="card" style="text-align:left;max-width:520px">
      <div class="center"><span class="badge" style="background:${g.color}">第${g.unit}单元</span>
        <h2 style="font-family:'STKaiti',serif;margin:8px 0 2px;font-size:24px">《${esc(g.title)}》</h2>
-       <p style="color:var(--ink2);font-size:13px;margin:0">${esc(g.type)} · ${g.date}${g.band?` · 体检：${esc(g.band)}`:(g.score?` · 得分 ${esc(String(g.score))}/30`:'')}</p></div>
+       <p style="color:var(--ink2);font-size:13px;margin:0">${esc(g.type)} · ${g.date}${g.time?' '+g.time:''}${g.band?` · 体检：${esc(g.band)}`:(g.score?` · 得分 ${esc(String(g.score))}/30`:'')}</p></div>
      <h4 style="color:var(--brass-d);margin:14px 0 4px">📝 作文初稿</h4>
      <div style="white-space:pre-wrap;font-family:'STKaiti',serif;font-size:15px;line-height:1.9;background:#fffdf6;border:1.5px solid #e6d3a4;border-radius:11px;padding:12px;max-height:28vh;overflow:auto">${esc(g.draft)}</div>
      ${g.article?`<h4 style="color:var(--brass-d);margin:14px 0 4px">✨ AI 优化范文 <span style="font-size:12px;color:var(--ink2)">（${g.wordCount}字）</span></h4>
